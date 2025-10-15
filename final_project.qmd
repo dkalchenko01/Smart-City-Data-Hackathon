@@ -23,10 +23,13 @@ pacman::p_load(
   polars,
   tidypolars,
   tidyverse,
-  fs,
+  sf,
   ggplot,
   gt,
-  plotly
+  plotly,
+  lubridate,
+  patchwork,
+  gganimate
 )
 
 ```
@@ -42,4 +45,219 @@ nyc <- tbl(con, "read_parquet('nyc-taxi-2024/*/*.parquet', hive_partitioning = t
 
 nyc |> head(10) |> gt()
 
+```
+
+
+```{r}
+#| label: simple taxi zones map
+#| echo: true
+#| message: false
+#| cache: false
+
+taxi_zones <- read_sf("taxi_zones/taxi_zones.shp") |> 
+  st_transform("+proj=aea +lat_1=40 +lat_2=42 +lat_0=40.7 +lon_0=-73.9")
+
+ggplot(taxi_zones) +
+  geom_sf() +
+  theme_minimal()
+```
+
+```{r}
+christmas_eve_pu <- nyc |> 
+  mutate(
+    date = as_date(tpep_pickup_datetime),
+    hours = hour(tpep_pickup_datetime)
+  ) |> 
+  filter(
+    date == "2024-12-24"
+  ) |> 
+  summarise(
+    rides = n(),
+    .by = c(PULocationID, hours)
+  ) |> 
+  collect() 
+christmas_eve_pu
+```
+
+
+
+```{r}
+christmas_eve_do <- nyc |>
+  mutate(
+    date = as_date(tpep_pickup_datetime),
+    hours = hour(tpep_pickup_datetime)
+  ) |>
+  filter(
+    date == "2024-12-24"
+  ) |>
+  summarise(
+    rides = n(),
+    .by = c(DOLocationID, hours)
+  ) |>
+  collect()
+christmas_eve_do
+```
+ 
+ 
+```{r}
+#| warnings: false
+eve_taxis <- bind_rows(
+  christmas_eve_pu |> mutate(type = "pu",
+                             LocationID = PULocationID) |> 
+    select(-PULocationID), 
+  christmas_eve_do  |> mutate(type = "do",
+                             LocationID = DOLocationID) |> 
+    select(-DOLocationID)
+  )
+eve_taxis <- taxi_zones |> 
+  left_join(eve_taxis, by = "LocationID" ) |> 
+  filter(!is.na(rides))
+eve_taxis |> glimpse()
+```
+
+
+```{r}
+eve_map <-eve_taxis |> 
+  ggplot() +
+  geom_sf(aes(fill = rides), color = "white") +
+  facet_wrap(~type) + 
+  theme_void() +
+  scale_fill_viridis_c(option = "viridis") +
+  transition_manual(hours) +
+  ease_aes("linear")
+
+animate(eve_map, nframes = 48, fps = 2)
+```
+
+```{r}
+# pu_map <- eve_taxis |> 
+#   ggplot() +
+#   geom_sf(data = eve_taxis,
+#           color = "white",
+#           aes(fill = pu_rides)) +
+  # theme_void() +
+  # scale_fill_viridis_c(option = "viridis") +
+  # transition_time(hours) +
+  # ease_aes("linear") +
+  # labs(
+  #   title = "PU"
+  # )
+# 
+# do_map <- eve_taxis |> 
+#   ggplot() +
+#   geom_sf(data = eve_taxis,
+#           color = "white",
+#           aes(fill = do_rides)) +
+#   theme_void() +
+#   scale_fill_viridis_c(option = "viridis") +
+#   transition_time(hours) +
+#   ease_aes("linear") +
+#   labs(
+#     title = "DO"
+# )
+# combined <- pu_map | do_map + plot_layout(ncol = 2)
+# 
+# animate(combined, nframes = 24, fps = 2)
+```
+
+
+```{r}
+# nyc <- read_sf("taxi_zones/taxi_zones.shp")
+# 
+# pick_up_stats <- taxi |> 
+#   summarize(
+#     pick_up_count = n(),
+#     .by = PULocationID
+#   ) |> 
+#   collect() |> 
+#   rename(OBJECTID = PULocationID)
+# 
+# drop_off_stats <- taxi |> 
+#   summarize(
+#     drop_off_count = n(),
+#     .by = DOLocationID
+#   ) |> 
+#   collect() |> 
+#   rename(OBJECTID = DOLocationID)
+# 
+# nyc <- left_join(nyc, pick_up_stats, by="OBJECTID")
+# nyc <- left_join(nyc, drop_off_stats, by="OBJECTID")
+# 
+# cc <- scales::seq_gradient_pal("#DBD65C", "#5614B0", "Lab")(seq(0,1,length.out=263))
+# 
+# p1 <- ggplot() +
+#   geom_sf(data = nyc,
+#           color = "white",
+#           aes(fill = pick_up_count)) +
+#   coord_sf(crs = "+proj=laea") +
+#   scale_fill_gradientn(colors =cc) +
+#   theme_minimal() +
+#   theme(legend.position = "bottom",
+#         axis.title = element_blank()) +
+#   labs(
+#     fill = "Pick ups"
+#   )
+# 
+# p2 <- ggplot() +
+#   geom_sf(data = nyc,
+#           color = "white",
+#           aes(fill = drop_off_count)) +
+#   coord_sf(crs = "+proj=laea") +
+#   scale_fill_gradientn(colors =cc) +
+#   theme_minimal() +
+#   theme(legend.position = "bottom",
+#         axis.title = element_blank()) +
+#   labs(
+#     fill = "Drop offs"
+#   )
+# 
+# p <- p1 | p2 
+# 
+# p +
+#   plot_annotation(
+#     title = "Number of pick-ups and drop-offs by different regions",
+#     caption = "Source: TLC Trip Record Data, 2025"
+#   )
+```
+
+
+
+
+```{r}
+# zone_centroids <- taxi_zones |> 
+#   select(LocationID) |> 
+#   mutate(centroid = st_centroid(geometry)) %>%
+#   mutate(lon = st_coordinates(centroid)[, 1],
+#          lat = st_coordinates(centroid)[, 2])
+# zone_centroids
+```
+
+```{r}
+# flows_coords <- christmas_eve %>%
+#   left_join(zone_centroids, by = c("PULocationID" = "LocationID")) %>%
+#   rename(pu_lon = lon, pu_lat = lat) %>%
+#   left_join(zone_centroids, by = c("DOLocationID" = "LocationID")) %>%
+#   rename(do_lon = lon, do_lat = lat)
+# flows_coords
+```
+
+
+```{r}
+# ggplot() +
+#   geom_sf(data = taxi_zones, fill = "gray90", color = "white") +
+#   geom_curve(
+#     data = flows_coords,
+#     aes(
+#       x = pu_lon, y = pu_lat,
+#       xend = do_lon, yend = do_lat,
+#       size = n_rides
+#     ),
+#     curvature = 0.2,
+#     arrow = arrow(length = unit(0.2, "cm")),
+#     color = "darkblue",
+#     alpha = 0.6
+#   ) +
+#   scale_size(range = c(0.3, 2)) +
+#   theme_void() +
+#   theme(legend.position = "none")
 ```
