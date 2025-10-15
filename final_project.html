@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Diana Aldoshyna, Daryna Kalchenko, Mariia Kobycheva">
-<meta name="dcterms.date" content="2025-10-15">
+<meta name="dcterms.date" content="2025-10-16">
 
 <title>Final Project: Smart City Data Hackathon</title>
 <style>
@@ -69,6 +69,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="final_project_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="final_project_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="final_project_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="final_project_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="final_project_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="final_project_files/libs/plotly-binding-4.11.0/plotly.js"></script>
+<script src="final_project_files/libs/typedarray-0.1/typedarray.min.js"></script>
+<script src="final_project_files/libs/jquery-3.5.1/jquery.min.js"></script>
+<link href="final_project_files/libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+<script src="final_project_files/libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="final_project_files/libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="final_project_files/libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 
 
 </head>
@@ -77,7 +86,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -98,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 15, 2025</p>
+      <p class="date">October 16, 2025</p>
     </div>
   </div>
   
@@ -115,708 +124,89 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(<span class="fu">duckdb</span>(), <span class="at">shutdown =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>nyc <span class="ot">&lt;-</span> <span class="fu">tbl</span>(con, <span class="st">"read_parquet('nyc-taxi-2024/*/*.parquet', hive_partitioning = true)"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>nyc <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div id="fqbaviderv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#fqbaviderv table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#fqbaviderv thead, #fqbaviderv tbody, #fqbaviderv tfoot, #fqbaviderv tr, #fqbaviderv td, #fqbaviderv th {
-  border-style: none;
-}
-
-#fqbaviderv p {
-  margin: 0;
-  padding: 0;
-}
-
-#fqbaviderv .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#fqbaviderv .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#fqbaviderv .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#fqbaviderv .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#fqbaviderv .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#fqbaviderv .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#fqbaviderv .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#fqbaviderv .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#fqbaviderv .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#fqbaviderv .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#fqbaviderv .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#fqbaviderv .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#fqbaviderv .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#fqbaviderv .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#fqbaviderv .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#fqbaviderv .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#fqbaviderv .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#fqbaviderv .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#fqbaviderv .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#fqbaviderv .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#fqbaviderv .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#fqbaviderv .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#fqbaviderv .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#fqbaviderv .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#fqbaviderv .gt_left {
-  text-align: left;
-}
-
-#fqbaviderv .gt_center {
-  text-align: center;
-}
-
-#fqbaviderv .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#fqbaviderv .gt_font_normal {
-  font-weight: normal;
-}
-
-#fqbaviderv .gt_font_bold {
-  font-weight: bold;
-}
-
-#fqbaviderv .gt_font_italic {
-  font-style: italic;
-}
-
-#fqbaviderv .gt_super {
-  font-size: 65%;
-}
-
-#fqbaviderv .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#fqbaviderv .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#fqbaviderv .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#fqbaviderv .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#fqbaviderv .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#fqbaviderv .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#fqbaviderv .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#fqbaviderv .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#fqbaviderv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="gt_col_headings header">
-<th id="VendorID" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">VendorID</th>
-<th id="tpep_pickup_datetime" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">tpep_pickup_datetime</th>
-<th id="tpep_dropoff_datetime" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">tpep_dropoff_datetime</th>
-<th id="passenger_count" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">passenger_count</th>
-<th id="trip_distance" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">trip_distance</th>
-<th id="RatecodeID" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">RatecodeID</th>
-<th id="store_and_fwd_flag" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">store_and_fwd_flag</th>
-<th id="PULocationID" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">PULocationID</th>
-<th id="DOLocationID" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">DOLocationID</th>
-<th id="payment_type" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">payment_type</th>
-<th id="fare_amount" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">fare_amount</th>
-<th id="extra" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">extra</th>
-<th id="mta_tax" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">mta_tax</th>
-<th id="tip_amount" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">tip_amount</th>
-<th id="tolls_amount" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">tolls_amount</th>
-<th id="improvement_surcharge" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">improvement_surcharge</th>
-<th id="total_amount" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">total_amount</th>
-<th id="congestion_surcharge" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">congestion_surcharge</th>
-<th id="Airport_fee" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Airport_fee</th>
-<th id="month" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">month</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_right" headers="VendorID">2</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:57:55</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 01:17:43</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">1.72</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">186</td>
-<td class="gt_row gt_right" headers="DOLocationID">79</td>
-<td class="gt_row gt_right" headers="payment_type">2</td>
-<td class="gt_row gt_right" headers="fare_amount">17.7</td>
-<td class="gt_row gt_right" headers="extra">1.0</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">0.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">22.70</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="VendorID">1</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:03:00</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:09:36</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">1.80</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">140</td>
-<td class="gt_row gt_right" headers="DOLocationID">236</td>
-<td class="gt_row gt_right" headers="payment_type">1</td>
-<td class="gt_row gt_right" headers="fare_amount">10.0</td>
-<td class="gt_row gt_right" headers="extra">3.5</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">3.75</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">18.75</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="VendorID">1</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:17:06</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:35:01</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">4.70</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">236</td>
-<td class="gt_row gt_right" headers="DOLocationID">79</td>
-<td class="gt_row gt_right" headers="payment_type">1</td>
-<td class="gt_row gt_right" headers="fare_amount">23.3</td>
-<td class="gt_row gt_right" headers="extra">3.5</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">3.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">31.30</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="VendorID">1</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:36:38</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:44:56</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">1.40</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">79</td>
-<td class="gt_row gt_right" headers="DOLocationID">211</td>
-<td class="gt_row gt_right" headers="payment_type">1</td>
-<td class="gt_row gt_right" headers="fare_amount">10.0</td>
-<td class="gt_row gt_right" headers="extra">3.5</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">2.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">17.00</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="VendorID">1</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:46:51</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:52:57</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">0.80</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">211</td>
-<td class="gt_row gt_right" headers="DOLocationID">148</td>
-<td class="gt_row gt_right" headers="payment_type">1</td>
-<td class="gt_row gt_right" headers="fare_amount">7.9</td>
-<td class="gt_row gt_right" headers="extra">3.5</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">3.20</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">16.10</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="VendorID">1</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:54:08</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 01:26:31</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">4.70</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">148</td>
-<td class="gt_row gt_right" headers="DOLocationID">141</td>
-<td class="gt_row gt_right" headers="payment_type">1</td>
-<td class="gt_row gt_right" headers="fare_amount">29.6</td>
-<td class="gt_row gt_right" headers="extra">3.5</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">6.90</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">41.50</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="VendorID">2</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:49:44</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 01:15:47</td>
-<td class="gt_row gt_right" headers="passenger_count">2</td>
-<td class="gt_row gt_right" headers="trip_distance">10.82</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">138</td>
-<td class="gt_row gt_right" headers="DOLocationID">181</td>
-<td class="gt_row gt_right" headers="payment_type">1</td>
-<td class="gt_row gt_right" headers="fare_amount">45.7</td>
-<td class="gt_row gt_right" headers="extra">6.0</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">10.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">64.95</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">0.0</td>
-<td class="gt_row gt_right" headers="Airport_fee">1.75</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="VendorID">1</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:30:40</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:58:40</td>
-<td class="gt_row gt_right" headers="passenger_count">0</td>
-<td class="gt_row gt_right" headers="trip_distance">3.00</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">246</td>
-<td class="gt_row gt_right" headers="DOLocationID">231</td>
-<td class="gt_row gt_right" headers="payment_type">2</td>
-<td class="gt_row gt_right" headers="fare_amount">25.4</td>
-<td class="gt_row gt_right" headers="extra">3.5</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">0.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">30.40</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="VendorID">2</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:26:01</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:54:12</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">5.44</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">161</td>
-<td class="gt_row gt_right" headers="DOLocationID">261</td>
-<td class="gt_row gt_right" headers="payment_type">2</td>
-<td class="gt_row gt_right" headers="fare_amount">31.0</td>
-<td class="gt_row gt_right" headers="extra">1.0</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">0.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">36.00</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="VendorID">2</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:28:08</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:29:16</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">0.04</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">113</td>
-<td class="gt_row gt_right" headers="DOLocationID">113</td>
-<td class="gt_row gt_right" headers="payment_type">2</td>
-<td class="gt_row gt_right" headers="fare_amount">3.0</td>
-<td class="gt_row gt_right" headers="extra">1.0</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">0.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">8.00</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-</tbody>
-</table>
-
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>nyc <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Source:   SQL [?? x 20]
+# Database: DuckDB 1.4.0 [root@Darwin 24.6.0:R 4.5.1/:memory:]
+   VendorID tpep_pickup_datetime tpep_dropoff_datetime passenger_count
+      &lt;int&gt; &lt;dttm&gt;               &lt;dttm&gt;                          &lt;dbl&gt;
+ 1        2 2024-01-01 00:57:55  2024-01-01 01:17:43                 1
+ 2        1 2024-01-01 00:03:00  2024-01-01 00:09:36                 1
+ 3        1 2024-01-01 00:17:06  2024-01-01 00:35:01                 1
+ 4        1 2024-01-01 00:36:38  2024-01-01 00:44:56                 1
+ 5        1 2024-01-01 00:46:51  2024-01-01 00:52:57                 1
+ 6        1 2024-01-01 00:54:08  2024-01-01 01:26:31                 1
+ 7        2 2024-01-01 00:49:44  2024-01-01 01:15:47                 2
+ 8        1 2024-01-01 00:30:40  2024-01-01 00:58:40                 0
+ 9        2 2024-01-01 00:26:01  2024-01-01 00:54:12                 1
+10        2 2024-01-01 00:28:08  2024-01-01 00:29:16                 1
+# ℹ 16 more variables: trip_distance &lt;dbl&gt;, RatecodeID &lt;dbl&gt;,
+#   store_and_fwd_flag &lt;chr&gt;, PULocationID &lt;int&gt;, DOLocationID &lt;int&gt;,
+#   payment_type &lt;dbl&gt;, fare_amount &lt;dbl&gt;, extra &lt;dbl&gt;, mta_tax &lt;dbl&gt;,
+#   tip_amount &lt;dbl&gt;, tolls_amount &lt;dbl&gt;, improvement_surcharge &lt;dbl&gt;,
+#   total_amount &lt;dbl&gt;, congestion_surcharge &lt;dbl&gt;, Airport_fee &lt;dbl&gt;,
+#   month &lt;dbl&gt;</code></pre>
 </div>
+</div>
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># data prep</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>holidays <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"holidays.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">date</span>(<span class="fu">as.Date</span>(date)))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>nyc <span class="ot">&lt;-</span> nyc <span class="sc">|&gt;</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">date</span>(tpep_pickup_datetime)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">==</span> <span class="dv">2024</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>num_of_rides_not_hols <span class="ot">&lt;-</span> nyc <span class="sc">|&gt;</span> </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>(date <span class="sc">%in%</span> holidays<span class="sc">$</span>date)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span> </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">num_of_rides =</span> <span class="fu">n</span>())</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>mean_num_of_rides <span class="ot">&lt;-</span> <span class="fu">mean</span>(dplyr<span class="sc">::</span><span class="fu">pull</span>(num_of_rides_not_hols, <span class="at">var =</span> num_of_rides))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>line <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> <span class="fu">c</span>(mean_num_of_rides<span class="sc">+</span><span class="dv">1500</span>), <span class="at">label =</span> <span class="fu">c</span>(<span class="st">"Mean number of rides per day"</span>))</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>nyc_num_of_rides_hols <span class="ot">&lt;-</span> nyc <span class="sc">|&gt;</span> </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span> </span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">num_of_rides =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">right_join</span>(holidays, <span class="fu">join_by</span>(date <span class="sc">==</span> date), <span class="at">copy =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_col(aes(x = reorder(name, date),</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="co">#            y = num_of_rides)) +</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(name, <span class="sc">-</span>num_of_rides), <span class="at">y =</span> num_of_rides),</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"blue4"</span>, </span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> <span class="fl">3.5</span>) <span class="sc">+</span> </span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(name, <span class="sc">-</span>num_of_rides), </span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>                    <span class="at">xend =</span> <span class="fu">reorder</span>(name, <span class="sc">-</span>num_of_rides), </span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>                    <span class="at">y =</span> <span class="dv">0</span>, </span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>                    <span class="at">yend =</span> num_of_rides),</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>               <span class="at">color =</span> <span class="st">"blue4"</span>,</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>               <span class="at">linewidth =</span> <span class="dv">1</span>,</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> mean_num_of_rides, </span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red4"</span>,</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>             <span class="at">linewidth =</span> <span class="fl">0.7</span>,</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> line,</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">21</span>, <span class="at">y =</span> y, <span class="at">label =</span> label),</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, <span class="at">colour =</span> <span class="st">"red4"</span>, <span class="at">size =</span> <span class="fl">2.5</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">40</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">130000</span>, <span class="at">by =</span> <span class="dv">20000</span>)) <span class="sc">+</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>,</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of taxi rides"</span>,</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Total number of taxi rides per holiday"</span>)</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplotly</span>(<span class="at">data =</span> nyc_num_of_rides_hols)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-body-outset">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-d92adb66fdf1a47eb651" style="width:100%;height:650px;"></div>
+<script type="application/json" data-for="htmlwidget-d92adb66fdf1a47eb651">{"x":{"data":[{"x":[11,4,9,22,7,17,16,2,13,12,15,23,18,1,14,20,3,5,10,21,8,19,6],"y":[98484,108657,101058,61817,103078,80373,80805,121771,88697,97522,81013,54764,77244,129428,86461,76073,112607,104995,99824,72579,101513,77033,103415],"text":["reorder(name, -num_of_rides): Easter Sunday<br />num_of_rides:  98484","reorder(name, -num_of_rides): Administrative Professionals Day<br />num_of_rides: 108657","reorder(name, -num_of_rides): Tax Day<br />num_of_rides: 101058","reorder(name, -num_of_rides): Independence Day<br />num_of_rides:  61817","reorder(name, -num_of_rides): Juneteenth<br />num_of_rides: 103078","reorder(name, -num_of_rides): Labour Day<br />num_of_rides:  80373","reorder(name, -num_of_rides): Christmas Eve<br />num_of_rides:  80805","reorder(name, -num_of_rides): Valentine's Day<br />num_of_rides: 121771","reorder(name, -num_of_rides): New Year's Eve<br />num_of_rides:  88697","reorder(name, -num_of_rides): Election Day<br />num_of_rides:  97522","reorder(name, -num_of_rides): New Year's Day<br />num_of_rides:  81013","reorder(name, -num_of_rides): Christmas Day<br />num_of_rides:  54764","reorder(name, -num_of_rides): Thanksgiving Day<br />num_of_rides:  77244","reorder(name, -num_of_rides): Halloween<br />num_of_rides: 129428","reorder(name, -num_of_rides): Day after Thanksgiving Day<br />num_of_rides:  86461","reorder(name, -num_of_rides): Washington's Birthday<br />num_of_rides:  76073","reorder(name, -num_of_rides): Mother's Day<br />num_of_rides: 112607","reorder(name, -num_of_rides): Father's Day<br />num_of_rides: 104995","reorder(name, -num_of_rides): Veterans Day<br />num_of_rides:  99824","reorder(name, -num_of_rides): Memorial Day<br />num_of_rides:  72579","reorder(name, -num_of_rides): Columbus Day<br />num_of_rides: 101513","reorder(name, -num_of_rides): Martin Luther King Jr. Day<br />num_of_rides:  77033","reorder(name, -num_of_rides): St. Patrick's Day<br />num_of_rides: 103415"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,139,1)","opacity":1,"size":13.228346456692915,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(0,0,139,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[11,11,null,4,4,null,9,9,null,22,22,null,7,7,null,17,17,null,16,16,null,2,2,null,13,13,null,12,12,null,15,15,null,23,23,null,18,18,null,1,1,null,14,14,null,20,20,null,3,3,null,5,5,null,10,10,null,21,21,null,8,8,null,19,19,null,6,6],"y":[0,98484,null,0,108657,null,0,101058,null,0,61817,null,0,103078,null,0,80373,null,0,80805,null,0,121771,null,0,88697,null,0,97522,null,0,81013,null,0,54764,null,0,77244,null,0,129428,null,0,86461,null,0,76073,null,0,112607,null,0,104995,null,0,99824,null,0,72579,null,0,101513,null,0,77033,null,0,103415],"text":["reorder(name, -num_of_rides): Easter Sunday<br />y: 0<br />reorder(name, -num_of_rides): 11<br />num_of_rides:  98484","reorder(name, -num_of_rides): Easter Sunday<br />y: 0<br />reorder(name, -num_of_rides): 11<br />num_of_rides:  98484",null,"reorder(name, -num_of_rides): Administrative Professionals Day<br />y: 0<br />reorder(name, -num_of_rides):  4<br />num_of_rides: 108657","reorder(name, -num_of_rides): Administrative Professionals Day<br />y: 0<br />reorder(name, -num_of_rides):  4<br />num_of_rides: 108657",null,"reorder(name, -num_of_rides): Tax Day<br />y: 0<br />reorder(name, -num_of_rides):  9<br />num_of_rides: 101058","reorder(name, -num_of_rides): Tax Day<br />y: 0<br />reorder(name, -num_of_rides):  9<br />num_of_rides: 101058",null,"reorder(name, -num_of_rides): Independence Day<br />y: 0<br />reorder(name, -num_of_rides): 22<br />num_of_rides:  61817","reorder(name, -num_of_rides): Independence Day<br />y: 0<br />reorder(name, -num_of_rides): 22<br />num_of_rides:  61817",null,"reorder(name, -num_of_rides): Juneteenth<br />y: 0<br />reorder(name, -num_of_rides):  7<br />num_of_rides: 103078","reorder(name, -num_of_rides): Juneteenth<br />y: 0<br />reorder(name, -num_of_rides):  7<br />num_of_rides: 103078",null,"reorder(name, -num_of_rides): Labour Day<br />y: 0<br />reorder(name, -num_of_rides): 17<br />num_of_rides:  80373","reorder(name, -num_of_rides): Labour Day<br />y: 0<br />reorder(name, -num_of_rides): 17<br />num_of_rides:  80373",null,"reorder(name, -num_of_rides): Christmas Eve<br />y: 0<br />reorder(name, -num_of_rides): 16<br />num_of_rides:  80805","reorder(name, -num_of_rides): Christmas Eve<br />y: 0<br />reorder(name, -num_of_rides): 16<br />num_of_rides:  80805",null,"reorder(name, -num_of_rides): Valentine's Day<br />y: 0<br />reorder(name, -num_of_rides):  2<br />num_of_rides: 121771","reorder(name, -num_of_rides): Valentine's Day<br />y: 0<br />reorder(name, -num_of_rides):  2<br />num_of_rides: 121771",null,"reorder(name, -num_of_rides): New Year's Eve<br />y: 0<br />reorder(name, -num_of_rides): 13<br />num_of_rides:  88697","reorder(name, -num_of_rides): New Year's Eve<br />y: 0<br />reorder(name, -num_of_rides): 13<br />num_of_rides:  88697",null,"reorder(name, -num_of_rides): Election Day<br />y: 0<br />reorder(name, -num_of_rides): 12<br />num_of_rides:  97522","reorder(name, -num_of_rides): Election Day<br />y: 0<br />reorder(name, -num_of_rides): 12<br />num_of_rides:  97522",null,"reorder(name, -num_of_rides): New Year's Day<br />y: 0<br />reorder(name, -num_of_rides): 15<br />num_of_rides:  81013","reorder(name, -num_of_rides): New Year's Day<br />y: 0<br />reorder(name, -num_of_rides): 15<br />num_of_rides:  81013",null,"reorder(name, -num_of_rides): Christmas Day<br />y: 0<br />reorder(name, -num_of_rides): 23<br />num_of_rides:  54764","reorder(name, -num_of_rides): Christmas Day<br />y: 0<br />reorder(name, -num_of_rides): 23<br />num_of_rides:  54764",null,"reorder(name, -num_of_rides): Thanksgiving Day<br />y: 0<br />reorder(name, -num_of_rides): 18<br />num_of_rides:  77244","reorder(name, -num_of_rides): Thanksgiving Day<br />y: 0<br />reorder(name, -num_of_rides): 18<br />num_of_rides:  77244",null,"reorder(name, -num_of_rides): Halloween<br />y: 0<br />reorder(name, -num_of_rides):  1<br />num_of_rides: 129428","reorder(name, -num_of_rides): Halloween<br />y: 0<br />reorder(name, -num_of_rides):  1<br />num_of_rides: 129428",null,"reorder(name, -num_of_rides): Day after Thanksgiving Day<br />y: 0<br />reorder(name, -num_of_rides): 14<br />num_of_rides:  86461","reorder(name, -num_of_rides): Day after Thanksgiving Day<br />y: 0<br />reorder(name, -num_of_rides): 14<br />num_of_rides:  86461",null,"reorder(name, -num_of_rides): Washington's Birthday<br />y: 0<br />reorder(name, -num_of_rides): 20<br />num_of_rides:  76073","reorder(name, -num_of_rides): Washington's Birthday<br />y: 0<br />reorder(name, -num_of_rides): 20<br />num_of_rides:  76073",null,"reorder(name, -num_of_rides): Mother's Day<br />y: 0<br />reorder(name, -num_of_rides):  3<br />num_of_rides: 112607","reorder(name, -num_of_rides): Mother's Day<br />y: 0<br />reorder(name, -num_of_rides):  3<br />num_of_rides: 112607",null,"reorder(name, -num_of_rides): Father's Day<br />y: 0<br />reorder(name, -num_of_rides):  5<br />num_of_rides: 104995","reorder(name, -num_of_rides): Father's Day<br />y: 0<br />reorder(name, -num_of_rides):  5<br />num_of_rides: 104995",null,"reorder(name, -num_of_rides): Veterans Day<br />y: 0<br />reorder(name, -num_of_rides): 10<br />num_of_rides:  99824","reorder(name, -num_of_rides): Veterans Day<br />y: 0<br />reorder(name, -num_of_rides): 10<br />num_of_rides:  99824",null,"reorder(name, -num_of_rides): Memorial Day<br />y: 0<br />reorder(name, -num_of_rides): 21<br />num_of_rides:  72579","reorder(name, -num_of_rides): Memorial Day<br />y: 0<br />reorder(name, -num_of_rides): 21<br />num_of_rides:  72579",null,"reorder(name, -num_of_rides): Columbus Day<br />y: 0<br />reorder(name, -num_of_rides):  8<br />num_of_rides: 101513","reorder(name, -num_of_rides): Columbus Day<br />y: 0<br />reorder(name, -num_of_rides):  8<br />num_of_rides: 101513",null,"reorder(name, -num_of_rides): Martin Luther King Jr. Day<br />y: 0<br />reorder(name, -num_of_rides): 19<br />num_of_rides:  77033","reorder(name, -num_of_rides): Martin Luther King Jr. Day<br />y: 0<br />reorder(name, -num_of_rides): 19<br />num_of_rides:  77033",null,"reorder(name, -num_of_rides): St. Patrick's Day<br />y: 0<br />reorder(name, -num_of_rides):  6<br />num_of_rides: 103415","reorder(name, -num_of_rides): St. Patrick's Day<br />y: 0<br />reorder(name, -num_of_rides):  6<br />num_of_rides: 103415"],"type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"rgba(0,0,139,0.5)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[0.40000000000000002,23.600000000000001],"y":[113849.71720116618,113849.71720116618],"text":"yintercept: 113849.7","type":"scatter","mode":"lines","line":{"width":2.6456692913385824,"color":"rgba(139,0,0,0.5)","dash":"dot"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[21],"y":[115349.71720116618],"text":"Mean number of rides per day","hovertext":"x: 21<br />y: 115349.7<br />label: Mean number of rides per day","textfont":{"size":9.4488188976377963,"color":"rgba(139,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":40.840182648401829,"r":7.3059360730593621,"b":191.79055053985846,"l":60.639269406392714},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Total number of taxi rides per holiday","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,23.600000000000001],"tickmode":"array","ticktext":["Halloween","Valentine's Day","Mother's Day","Administrative Professionals Day","Father's Day","St. Patrick's Day","Juneteenth","Columbus Day","Tax Day","Veterans Day","Easter Sunday","Election Day","New Year's Eve","Day after Thanksgiving Day","New Year's Day","Christmas Eve","Labour Day","Thanksgiving Day","Martin Luther King Jr. Day","Washington's Birthday","Memorial Day","Independence Day","Christmas Day"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],"categoryorder":"array","categoryarray":["Halloween","Valentine's Day","Mother's Day","Administrative Professionals Day","Father's Day","St. Patrick's Day","Juneteenth","Columbus Day","Tax Day","Veterans Day","Easter Sunday","Election Day","New Year's Eve","Day after Thanksgiving Day","New Year's Day","Christmas Eve","Labour Day","Thanksgiving Day","Martin Luther King Jr. Day","Washington's Birthday","Memorial Day","Independence Day","Christmas Day"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-40,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-6471.4000000000005,135899.39999999999],"tickmode":"array","ticktext":["0","20000","40000","60000","80000","100000","120000"],"tickvals":[0,20000,40000,59999.999999999993,80000,100000,120000],"categoryorder":"array","categoryarray":["0","20000","40000","60000","80000","100000","120000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Number of taxi rides","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"4ea75ea4a4dc":{"x":{},"y":{},"type":"scatter"},"4ea7b43980f":{"x":{},"y":{},"xend":{},"yend":{}},"4ea72b40690":{"yintercept":{}},"4ea7791ad952":{"x":{},"y":{},"label":{}}},"cur_data":"4ea75ea4a4dc","visdat":{"4ea75ea4a4dc":["function (y) ","x"],"4ea7b43980f":["function (y) ","x"],"4ea72b40690":["function (y) ","x"],"4ea7791ad952":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 

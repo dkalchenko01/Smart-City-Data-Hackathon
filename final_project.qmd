@@ -40,6 +40,72 @@ pacman::p_load(
 con <- dbConnect(duckdb(), shutdown = TRUE)
 nyc <- tbl(con, "read_parquet('nyc-taxi-2024/*/*.parquet', hive_partitioning = true)")
 
-nyc |> head(10) |> gt()
+nyc |> head(10)
 
+```
+
+```{r}
+#| label: num of rides
+#| echo: true
+#| message: false
+#| cache: false
+#| fig.height: 6
+#| fig.width: 6
+#| column: body-outset
+
+# data prep
+
+holidays <- read.csv("holidays.csv") |> 
+  mutate(date = date(as.Date(date)))
+
+nyc <- nyc |> 
+  mutate(date = date(tpep_pickup_datetime)) |> 
+  filter(year(date) == 2024)
+
+num_of_rides_not_hols <- nyc |> 
+  filter(!(date %in% holidays$date)) |> 
+  group_by(date) |> 
+  summarise(num_of_rides = n())
+
+mean_num_of_rides <- mean(dplyr::pull(num_of_rides_not_hols, var = num_of_rides))
+
+
+line <- data.frame(y = c(mean_num_of_rides+1500), label = c("Mean number of rides per day"))
+
+nyc_num_of_rides_hols <- nyc |> 
+  group_by(date) |> 
+  summarise(num_of_rides = n()) |> 
+  right_join(holidays, join_by(date == date), copy = TRUE) |> 
+  
+  ggplot() +
+  # geom_col(aes(x = reorder(name, date),
+  #            y = num_of_rides)) +
+  geom_point(aes(x = reorder(name, -num_of_rides), y = num_of_rides),
+             color = "blue4", 
+             size = 3.5) + 
+  geom_segment(aes(x = reorder(name, -num_of_rides), 
+                    xend = reorder(name, -num_of_rides), 
+                    y = 0, 
+                    yend = num_of_rides),
+               color = "blue4",
+               linewidth = 1,
+               alpha = 0.5) +
+  geom_hline(yintercept = mean_num_of_rides, 
+             color = "red4",
+             linewidth = 0.7,
+             alpha = 0.5,
+             linetype = "dotted") +
+  geom_text(
+    data = line,
+    aes(x = 21, y = y, label = label),
+    hjust = 0, vjust = 0, colour = "red4", size = 2.5
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 40, vjust = 0.5, hjust = 1)) +
+  scale_y_continuous(breaks = seq(0, 130000, by = 20000)) +
+  labs(x = "",
+       y = "Number of taxi rides",
+       title = "Total number of taxi rides per holiday")
+
+ggplotly(data = nyc_num_of_rides_hols)
 ```
