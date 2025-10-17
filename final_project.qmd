@@ -55,7 +55,8 @@ nyc |> head(10) |> gt()
 #| cache: false
 
 taxi_zones <- read_sf("taxi_zones/taxi_zones.shp") |> 
-  st_transform("+proj=aea +lat_1=40 +lat_2=42 +lat_0=40.7 +lon_0=-73.9")
+  st_transform("+proj=aea +lat_1=40 +lat_2=42 +lat_0=40.7 +lon_0=-73.9") |> 
+  filter(borough == "Manhattan")
 
 ggplot(taxi_zones) +
   geom_sf() +
@@ -69,7 +70,7 @@ christmas_eve_pu <- nyc |>
     hours = hour(tpep_pickup_datetime)
   ) |> 
   filter(
-    date == "2024-12-24"
+    date == "2024-12-31"
   ) |> 
   summarise(
     rides = n(),
@@ -88,7 +89,7 @@ christmas_eve_do <- nyc |>
     hours = hour(tpep_pickup_datetime)
   ) |>
   filter(
-    date == "2024-12-24"
+    date == "2024-12-31"
   ) |>
   summarise(
     rides = n(),
@@ -109,24 +110,63 @@ eve_taxis <- bind_rows(
                              LocationID = DOLocationID) |> 
     select(-DOLocationID)
   )
-eve_taxis <- taxi_zones |> 
-  left_join(eve_taxis, by = "LocationID" ) |> 
+
+eve_taxis <- taxi_zones |>
+  left_join(eve_taxis, by = "LocationID" ) |>
   filter(!is.na(rides))
 eve_taxis |> glimpse()
 ```
 
 
 ```{r}
-eve_map <-eve_taxis |> 
+eve_map <- 
   ggplot() +
-  geom_sf(aes(fill = rides), color = "white") +
-  facet_wrap(~type) + 
+  geom_sf(data = taxi_zones, color = "white" ) +
+  geom_sf(data = eve_taxis, aes(fill = rides), color = "white" ) +
+  facet_wrap(~type) +
   theme_void() +
-  scale_fill_viridis_c(option = "viridis") +
+  scale_fill_viridis_c(option = "turbo", na.value= "lightgrey") +
   transition_manual(hours) +
-  ease_aes("linear")
+  ease_aes("linear") 
+  
 
+# ggplotly(eve_map, tooltip = c("rides", "type", "hours"))
 animate(eve_map, nframes = 48, fps = 2)
+# eve_map
+```
+
+
+
+```{r}
+# pickup_map <- ggplot() +
+#   geom_sf(
+#     data = eve_taxis |> filter(type == "pu"),
+#     aes(fill = rides, frame = hours),
+#     color = "white"
+#   ) +
+#   theme_void() +
+#   scale_fill_viridis_c(option = "viridis", na.value = "lightgrey") +
+#   ggtitle("Pickups per Hour")
+# 
+# dropoff_map <- ggplot() +
+#   geom_sf(
+#     data = eve_taxis |> filter(type == "do"),
+#     aes(fill = rides, frame = hours),
+#     color = "white"
+#   ) +
+#   theme_void() +
+#   scale_fill_viridis_c(option = "viridis", na.value = "lightgrey") +
+#   ggtitle("Dropoffs per Hour")
+# 
+# subplot(
+#   ggplotly(pickup_map, tooltip = c("rides", "hours")),
+#   ggplotly(dropoff_map, tooltip = c("rides", "hours")),
+#   nrows = 1,
+#   shareX = TRUE,
+#   shareY = TRUE
+# ) %>%
+#   animation_opts(frame = 1500, transition = 500, easing = "linear") %>%
+#   animation_slider(currentvalue = list(prefix = "Hour: "))
 ```
 
 ```{r}
