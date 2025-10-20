@@ -29,7 +29,7 @@ pacman::p_load(
   plotly,
   ggridges,
   viridis,
-  colorRamps
+  colorRamps,
   lubridate,
   patchwork,
   gganimate,
