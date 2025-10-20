@@ -23,13 +23,17 @@ pacman::p_load(
   polars,
   tidypolars,
   tidyverse,
-  fs,
+  sf,
   ggplot,
   gt,
   plotly,
   ggridges,
   viridis,
   colorRamps
+  lubridate,
+  patchwork,
+  gganimate,
+  ggimage
 )
 
 ```
@@ -213,3 +217,159 @@ nyc_tips_passangers
 
 
 ```
+```
+
+
+```{r}
+#| label: taxi zones
+#| echo: true
+#| message: false
+#| cache: false
+
+taxi_zones_man <- read_sf("taxi_zones/taxi_zones.shp") |> 
+  st_transform("+proj=aea +lat_1=40 +lat_2=42 +lat_0=40.7 +lon_0=-73.9") |> 
+  filter(borough == "Manhattan")
+
+taxi_zones_nyc <- read_sf("taxi_zones/taxi_zones.shp") |> 
+  st_transform("+proj=aea +lat_1=40 +lat_2=42 +lat_0=40.7 +lon_0=-73.9") 
+
+```
+
+```{r}
+#| label: new year eve data
+#| echo: true
+#| message: false
+#| cache: false
+date_nye <- "2024-12-31"
+nye_pu <- nyc |> 
+  mutate(
+    date = as_date(tpep_pickup_datetime),
+    hours = hour(tpep_pickup_datetime)
+  ) |> 
+  filter(
+    date == date_nye
+  ) |> 
+  summarise(
+    rides = n(),
+    .by = c(PULocationID, hours)
+  ) |> 
+  collect() 
+
+nye_do <- nyc |>
+  mutate(
+    date = as_date(tpep_pickup_datetime),
+    hours = hour(tpep_pickup_datetime)
+  ) |>
+  filter(
+    date == date_nye
+  ) |>
+  summarise(
+    rides = n(),
+    .by = c(DOLocationID, hours)
+  ) |>
+  collect()
+
+nye_taxis <- bind_rows(
+  nye_pu |> mutate(type = "Pick ups",
+                             LocationID = PULocationID) |> 
+    select(-PULocationID), 
+  nye_do  |> mutate(type = "Drop offs",
+                             LocationID = DOLocationID) |> 
+    select(-DOLocationID)
+  ) |> 
+  mutate(
+    type = factor(type, levels = c("Pick ups", "Drop offs")),
+    hour_label = sprintf("%02d:00", hours)
+  )
+
+
+nye_taxis
+```
+
+
+ 
+ 
+```{r}
+#| label: nye with taxis data
+#| echo: true
+#| cache: false
+#| warnings: false
+
+nye_taxis_man <- taxi_zones_man |>
+  left_join(nye_taxis, by = "LocationID" ) |>
+  filter(!is.na(rides))
+
+nye_taxis_nyc <- taxi_zones_nyc |>
+  left_join(nye_taxis, by = "LocationID" ) |>
+  filter(!is.na(rides))
+
+nye_taxis_nyc
+```
+
+
+```{r}
+#| label: nyc taxis map
+#| echo: true
+#| message: false
+#| cache: false
+#| warnings: false
+nye_map_nyc <- ggplot() +
+  geom_sf(data = taxi_zones_nyc, color = "white" ) +
+  geom_sf(data = nye_taxis_nyc, aes(fill = rides), color = "white" ) +
+  facet_wrap(~type) +
+  theme_void() +
+  scale_fill_viridis_c(option = "turbo") +
+  transition_manual(hour_label) +
+  ease_aes("linear")  +
+  labs(
+    title = "New Year's Eve NYC taxi",
+    subtitle = "Hours : {current_frame}",
+    fill = "Rides"
+  ) +
+  theme(
+    strip.text = element_text(size = 9 , margin = margin(b = 6)),
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(face = "bold")
+  )
+  
+animate(nye_map_nyc, nframes = 48, fps = 2)
+```
+```{r}
+#| label: man taxis map
+#| echo: true
+#| cache: false
+#| message: false
+#| warnings: false
+tree <- taxi_zones_man |> 
+  filter(LocationID == 161) |> 
+  st_centroid() |> 
+  st_coordinates() |>         
+  as_tibble() |> 
+  mutate(
+    image = "https://cdn-icons-png.flaticon.com/512/3751/3751541.png"
+  )
+
+nye_map_man <- ggplot() +
+  geom_sf(data = taxi_zones_man, color = "white" ) +
+  geom_sf(data = nye_taxis_man, aes(fill = rides), color = "white" ) +
+  facet_wrap(~type) +
+  theme_void() +
+  scale_fill_viridis_c(option = "turbo") +
+  transition_manual(hour_label) +
+  ease_aes("linear") +
+  geom_image(data = tree, aes(x =X, y = Y, image = image), size = 0.05) +
+  labs(
+    title = "New Year's Eve in Manhattan",
+    subtitle = "Hours : {current_frame}",
+    fill = "Rides"
+  ) +
+  theme(
+    strip.text = element_text(size = 9 , margin = margin(b = 6)),
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(face = "bold")
+  )
+  
+animate(nye_map_man, nframes = 48, fps = 2)
+```
+
+
