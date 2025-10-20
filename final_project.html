@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Diana Aldoshyna, Daryna Kalchenko, Mariia Kobycheva">
-<meta name="dcterms.date" content="2025-10-15">
+<meta name="dcterms.date" content="2025-10-20">
 
 <title>Final Project: Smart City Data Hackathon</title>
 <style>
@@ -69,6 +69,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="final_project_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="final_project_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="final_project_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="final_project_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="final_project_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="final_project_files/libs/plotly-binding-4.11.0/plotly.js"></script>
+<script src="final_project_files/libs/typedarray-0.1/typedarray.min.js"></script>
+<script src="final_project_files/libs/jquery-3.5.1/jquery.min.js"></script>
+<link href="final_project_files/libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+<script src="final_project_files/libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="final_project_files/libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="final_project_files/libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 
 
 </head>
@@ -77,7 +86,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -98,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 15, 2025</p>
+      <p class="date">October 20, 2025</p>
     </div>
   </div>
   
@@ -112,710 +121,340 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p><br></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(<span class="fu">duckdb</span>(), <span class="at">shutdown =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>nyc <span class="ot">&lt;-</span> <span class="fu">tbl</span>(con, <span class="st">"read_parquet('nyc-taxi-2024/*/*.parquet', hive_partitioning = true)"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>nyc <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">|&gt;</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#nyc</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(<span class="fu">duckdb</span>(), <span class="at">shutdown =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>nyc <span class="ot">&lt;-</span> <span class="fu">tbl</span>(con, <span class="st">"read_parquet('nyc-taxi-2024/*/*.parquet', hive_partitioning = true)"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>nyc <span class="ot">&lt;-</span> nyc <span class="sc">|&gt;</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">date</span>(tpep_pickup_datetime)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">year</span>(date) <span class="sc">==</span> <span class="dv">2024</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#hols</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>holc_to_delete <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Administrative Professionals Day"</span>, <span class="st">"Columbus Day"</span>, <span class="st">"Tax Day"</span>, <span class="st">"Labour Day"</span>, </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Martin Luther King Jr. Day"</span>, <span class="st">"Washington's Birthday"</span>, <span class="st">"Election Day"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>holidays <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"holidays.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">date</span>(<span class="fu">as.Date</span>(date)))  <span class="sc">|&gt;</span> </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>(name <span class="sc">%in%</span> holc_to_delete))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br></p>
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># data prep: getting the mean num of rides per day</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>num_of_rides_total <span class="ot">&lt;-</span> nyc <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">num_of_rides =</span> <span class="fu">n</span>())</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>mean_num_of_rides <span class="ot">&lt;-</span> <span class="fu">mean</span>(dplyr<span class="sc">::</span><span class="fu">pull</span>(num_of_rides_total, <span class="at">var =</span> num_of_rides))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># graph</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>nyc_num_of_rides_hols_graph <span class="ot">&lt;-</span> nyc <span class="sc">|&gt;</span> </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span> </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">num_of_rides =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">right_join</span>(holidays, <span class="fu">join_by</span>(date <span class="sc">==</span> date), <span class="at">copy =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(name, date), </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                 <span class="at">y =</span> num_of_rides,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                 <span class="at">text =</span> <span class="fu">paste0</span>(<span class="st">"Holiday: "</span>, name, <span class="st">"&lt;br&gt;Date: "</span>, date, <span class="st">"&lt;br&gt;Number of rides: "</span>, num_of_rides)),</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#39568CFF"</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> <span class="fl">3.5</span>) <span class="sc">+</span> </span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(name, date), </span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                    <span class="at">xend =</span> <span class="fu">reorder</span>(name, date), </span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                    <span class="at">y =</span> <span class="dv">0</span>, </span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>                    <span class="at">yend =</span> num_of_rides),</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>               <span class="at">color =</span> <span class="st">"#39568CFF"</span>,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>               <span class="at">linewidth =</span> <span class="dv">1</span>,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"viridis"</span>) <span class="sc">+</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> mean_num_of_rides, </span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red4"</span>,</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>             <span class="at">linewidth =</span> <span class="fl">0.7</span>,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.5</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">y =</span> <span class="fu">c</span>(mean_num_of_rides<span class="sc">+</span><span class="dv">2200</span>), <span class="at">label =</span> <span class="fu">c</span>(<span class="fu">paste0</span>(<span class="st">"Mean number of rides per day: "</span>, <span class="fu">round</span>(mean_num_of_rides)))),</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">14</span>, <span class="at">y =</span> y, <span class="at">label =</span> label),</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">hjust =</span> <span class="dv">0</span>, </span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">vjust =</span> <span class="dv">0</span>, </span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"red4"</span>, </span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.5</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">40</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">130000</span>, <span class="at">by =</span> <span class="dv">20000</span>)) <span class="sc">+</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">""</span>,</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of taxi rides"</span>,</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Total number of taxi rides per holiday"</span>)</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplotly</span>(<span class="at">data =</span> nyc_num_of_rides_hols_graph, <span class="at">tooltip =</span> <span class="st">"text"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-body-outset">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-9862c11cbc22654ca381" style="width:100%;height:650px;"></div>
+<script type="application/json" data-for="htmlwidget-9862c11cbc22654ca381">{"x":{"data":[{"x":[4,1,10,5,7,12,15,13,16,3,11,6,2,9,14,8],"y":[98484,81013,129428,112607,104995,77244,54764,86461,88697,103415,99824,72579,121771,61817,80805,103078],"text":["Holiday: Easter Sunday<br>Date: 2024-03-31<br>Number of rides: 98484","Holiday: New Year's Day<br>Date: 2024-01-01<br>Number of rides: 81013","Holiday: Halloween<br>Date: 2024-10-31<br>Number of rides: 129428","Holiday: Mother's Day<br>Date: 2024-05-12<br>Number of rides: 112607","Holiday: Father's Day<br>Date: 2024-06-16<br>Number of rides: 104995","Holiday: Thanksgiving Day<br>Date: 2024-11-28<br>Number of rides: 77244","Holiday: Christmas Day<br>Date: 2024-12-25<br>Number of rides: 54764","Holiday: Day after Thanksgiving Day<br>Date: 2024-11-29<br>Number of rides: 86461","Holiday: New Year's Eve<br>Date: 2024-12-31<br>Number of rides: 88697","Holiday: St. Patrick's Day<br>Date: 2024-03-17<br>Number of rides: 103415","Holiday: Veterans Day<br>Date: 2024-11-11<br>Number of rides: 99824","Holiday: Memorial Day<br>Date: 2024-05-27<br>Number of rides: 72579","Holiday: Valentine's Day<br>Date: 2024-02-14<br>Number of rides: 121771","Holiday: Independence Day<br>Date: 2024-07-04<br>Number of rides: 61817","Holiday: Christmas Eve<br>Date: 2024-12-24<br>Number of rides: 80805","Holiday: Juneteenth<br>Date: 2024-06-19<br>Number of rides: 103078"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(57,86,140,1)","opacity":1,"size":13.228346456692915,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(57,86,140,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4,4,null,1,1,null,10,10,null,5,5,null,7,7,null,12,12,null,15,15,null,13,13,null,16,16,null,3,3,null,11,11,null,6,6,null,2,2,null,9,9,null,14,14,null,8,8],"y":[0,98484,null,0,81013,null,0,129428,null,0,112607,null,0,104995,null,0,77244,null,0,54764,null,0,86461,null,0,88697,null,0,103415,null,0,99824,null,0,72579,null,0,121771,null,0,61817,null,0,80805,null,0,103078],"text":"","type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"rgba(57,86,140,0.5)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[0.40000000000000002,16.600000000000001],"y":[112485.42076502733,112485.42076502733],"text":"","type":"scatter","mode":"lines","line":{"width":2.6456692913385824,"color":"rgba(139,0,0,0.5)","dash":"dot"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[14],"y":[114685.42076502733],"text":"Mean number of rides per day: 112485","hovertext":"","textfont":{"size":13.228346456692915,"color":"rgba(139,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":40.840182648401829,"r":7.3059360730593621,"b":158.03169557940333,"l":60.639269406392714},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Total number of taxi rides per holiday","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,16.600000000000001],"tickmode":"array","ticktext":["New Year's Day","Valentine's Day","St. Patrick's Day","Easter Sunday","Mother's Day","Memorial Day","Father's Day","Juneteenth","Independence Day","Halloween","Veterans Day","Thanksgiving Day","Day after Thanksgiving Day","Christmas Eve","Christmas Day","New Year's Eve"],"tickvals":[1,2,3.0000000000000004,4,5,6,7,8,9,10,11,12,13,14,15,16],"categoryorder":"array","categoryarray":["New Year's Day","Valentine's Day","St. Patrick's Day","Easter Sunday","Mother's Day","Memorial Day","Father's Day","Juneteenth","Independence Day","Halloween","Veterans Day","Thanksgiving Day","Day after Thanksgiving Day","Christmas Eve","Christmas Day","New Year's Eve"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-40,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-6471.4000000000005,135899.39999999999],"tickmode":"array","ticktext":["0","20000","40000","60000","80000","100000","120000"],"tickvals":[0,20000,40000,59999.999999999993,80000,100000,120000],"categoryorder":"array","categoryarray":["0","20000","40000","60000","80000","100000","120000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Number of taxi rides","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"a3d4c771376":{"x":{},"y":{},"text":{},"type":"scatter"},"a3d1d9ecf32":{"x":{},"y":{},"xend":{},"yend":{}},"a3d2534eacf":{"yintercept":{}},"a3d3523cf1e":{"x":{},"y":{},"label":{}}},"cur_data":"a3d4c771376","visdat":{"a3d4c771376":["function (y) ","x"],"a3d1d9ecf32":["function (y) ","x"],"a3d2534eacf":["function (y) ","x"],"a3d3523cf1e":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p><br></p>
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># data prep: choosing the holidays</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>important_hols <span class="ot">&lt;-</span> holidays <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Halloween"</span>, <span class="st">"Valentine's Day"</span>, <span class="st">"New Year's Eve"</span>, <span class="st">"Christmas Eve"</span>, <span class="st">"Thanksgiving Day"</span>))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># graph: interactive version</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>nyc_tips_passangers <span class="ot">&lt;-</span> nyc <span class="sc">|&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(tip_amount <span class="sc">&gt;=</span> <span class="dv">0</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>         passenger_count <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>         passenger_count <span class="sc">&lt;</span> <span class="dv">8</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>         payment_type <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(important_hols, <span class="fu">join_by</span>(date <span class="sc">==</span> date), <span class="at">copy =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span> (name, passenger_count) <span class="sc">|&gt;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_tip_amount =</span> <span class="fu">mean</span>(tip_amount, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">total_num =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(name)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> avg_tip_amount, <span class="at">x =</span> passenger_count, <span class="at">color =</span> name)) <span class="sc">+</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.5</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> total_num, </span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>                 <span class="at">text =</span> <span class="fu">paste0</span>(<span class="st">"Holiday: "</span>, name, <span class="st">"&lt;br&gt;Passengers: "</span>, passenger_count, <span class="st">"&lt;br&gt;Avg tip: $"</span>, <span class="fu">round</span>(avg_tip_amount,<span class="dv">2</span>), <span class="st">"&lt;br&gt;Total rides: "</span>, total_num)), </span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">6</span>, <span class="at">by =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"viridis"</span>) <span class="sc">+</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Number of passangers"</span>,</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">"Average amount of the tip, $"</span>,</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Average amount of tips per number of passangers"</span>,</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">color =</span> <span class="st">"Holiday name"</span>,</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        <span class="at">size =</span> <span class="st">""</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplotly</span>(<span class="at">data =</span> nyc_tips_passangers, <span class="at">tooltip =</span> <span class="st">"text"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-body-outset">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-c8b31fe5fceecd4e0947" style="width:100%;height:487px;"></div>
+<script type="application/json" data-for="htmlwidget-c8b31fe5fceecd4e0947">{"x":{"data":[{"x":[1,2,3,4,5,6],"y":[3.7078074550130395,4.3878542130552054,4.6443081550802079,4.8883882457702565,3.6912621359223303,3.9237398373983718],"text":"","type":"scatter","mode":"lines","line":{"width":5.6692913385826778,"color":"rgba(68,1,84,0.5)","dash":"solid"},"hoveron":"points","name":"Christmas Eve","legendgroup":"Christmas Eve","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6],"y":[4.2019558000568002,5.0738628278316069,4.5188876732312222,4.9755582822085787,4.2692534992223949,4.1479325842696619],"text":"","type":"scatter","mode":"lines","line":{"width":5.6692913385826778,"color":"rgba(59,82,139,0.5)","dash":"solid"},"hoveron":"points","name":"Halloween","legendgroup":"Halloween","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6],"y":[3.9438746023014097,4.4699220055710942,4.8856779077770094,5.3681892001623961,4.3109950248756226,4.2085204081632668],"text":"","type":"scatter","mode":"lines","line":{"width":5.6692913385826778,"color":"rgba(33,144,140,0.5)","dash":"solid"},"hoveron":"points","name":"New Year's Eve","legendgroup":"New Year's Eve","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6],"y":[3.8318498783738426,4.5119060616399773,4.2414254247954579,4.3108826247689436,4.2596119402985106,3.9273181818181802],"text":"","type":"scatter","mode":"lines","line":{"width":5.6692913385826778,"color":"rgba(93,200,99,0.5)","dash":"solid"},"hoveron":"points","name":"Thanksgiving Day","legendgroup":"Thanksgiving Day","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6],"y":[3.9604541091141203,4.3291014987387371,4.5248373773877058,4.7064566929133891,3.9432474226804128,4.1177411477411487],"text":"","type":"scatter","mode":"lines","line":{"width":5.6692913385826778,"color":"rgba(253,231,37,0.5)","dash":"solid"},"hoveron":"points","name":"Valentine's Day","legendgroup":"Valentine's Day","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3,6,2,5,4,1],"y":[4.6443081550802079,3.9237398373983718,4.3878542130552054,3.6912621359223303,4.8883882457702565,3.7078074550130395],"text":["Holiday: Christmas Eve<br>Passengers: 3<br>Avg tip: $4.64<br>Total rides: 2992","Holiday: Christmas Eve<br>Passengers: 6<br>Avg tip: $3.92<br>Total rides: 246","Holiday: Christmas Eve<br>Passengers: 2<br>Avg tip: $4.39<br>Total rides: 8533","Holiday: Christmas Eve<br>Passengers: 5<br>Avg tip: $3.69<br>Total rides: 412","Holiday: Christmas Eve<br>Passengers: 4<br>Avg tip: $4.89<br>Total rides: 2246","Holiday: Christmas Eve<br>Passengers: 1<br>Avg tip: $3.71<br>Total rides: 38900"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(68,1,84,1)","opacity":1,"size":[13.404560503441243,8.3407521871593051,17.65294080776842,9.1837819657750313,12.564358567268544,29.307660182131837],"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(68,1,84,1)"}},"hoveron":"points","name":"Christmas Eve","legendgroup":"Christmas Eve","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4,6,3,2,1,5],"y":[4.9755582822085787,4.1479325842696619,4.5188876732312222,5.0738628278316069,4.2019558000568002,4.2692534992223949],"text":["Holiday: Halloween<br>Passengers: 4<br>Avg tip: $4.98<br>Total rides: 1630","Holiday: Halloween<br>Passengers: 6<br>Avg tip: $4.15<br>Total rides: 445","Holiday: Halloween<br>Passengers: 3<br>Avg tip: $4.52<br>Total rides: 2742","Holiday: Halloween<br>Passengers: 2<br>Avg tip: $5.07<br>Total rides: 12087","Holiday: Halloween<br>Passengers: 1<br>Avg tip: $4.2<br>Total rides: 73801","Holiday: Halloween<br>Passengers: 5<br>Avg tip: $4.27<br>Total rides: 643"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(59,82,139,1)","opacity":1,"size":[11.745333038477449,9.303483543883079,13.137108691816238,19.613928995155167,37.551173383637156,9.8963162826730535],"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(59,82,139,1)"}},"hoveron":"points","name":"Halloween","legendgroup":"Halloween","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5,3,6,1,2,4],"y":[4.3109950248756226,4.8856779077770094,4.2085204081632668,3.9438746023014097,4.4699220055710942,5.3681892001623961],"text":["Holiday: New Year's Eve<br>Passengers: 5<br>Avg tip: $4.31<br>Total rides: 402","Holiday: New Year's Eve<br>Passengers: 3<br>Avg tip: $4.89<br>Total rides: 2906","Holiday: New Year's Eve<br>Passengers: 6<br>Avg tip: $4.21<br>Total rides: 196","Holiday: New Year's Eve<br>Passengers: 1<br>Avg tip: $3.94<br>Total rides: 41803","Holiday: New Year's Eve<br>Passengers: 2<br>Avg tip: $4.47<br>Total rides: 10770","Holiday: New Year's Eve<br>Passengers: 4<br>Avg tip: $5.37<br>Total rides: 2463"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(33,144,140,1)","opacity":1,"size":[9.1457268762161164,13.313959694259763,7.559055118110237,30.108542985893973,18.926769008117514,12.822611041042377],"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(33,144,140,1)"}},"hoveron":"points","name":"New Year's Eve","legendgroup":"New Year's Eve","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2,1,3,6,4,5],"y":[4.5119060616399773,3.8318498783738426,4.2414254247954579,3.9273181818181802,4.3108826247689436,4.2596119402985106],"text":["Holiday: Thanksgiving Day<br>Passengers: 2<br>Avg tip: $4.51<br>Total rides: 8793","Holiday: Thanksgiving Day<br>Passengers: 1<br>Avg tip: $3.83<br>Total rides: 34532","Holiday: Thanksgiving Day<br>Passengers: 3<br>Avg tip: $4.24<br>Total rides: 3178","Holiday: Thanksgiving Day<br>Passengers: 6<br>Avg tip: $3.93<br>Total rides: 220","Holiday: Thanksgiving Day<br>Passengers: 4<br>Avg tip: $4.31<br>Total rides: 2164","Holiday: Thanksgiving Day<br>Passengers: 5<br>Avg tip: $4.26<br>Total rides: 335"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(93,200,99,1)","opacity":1,"size":[17.809127796693438,28.04369490856984,13.595862250593484,8.1006307339985018,12.463230901402452,8.8624045937201092],"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(93,200,99,1)"}},"hoveron":"points","name":"Thanksgiving Day","legendgroup":"Thanksgiving Day","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,5,4,3,6,2],"y":[3.9604541091141203,3.9432474226804128,4.7064566929133891,4.5248373773877058,4.1177411477411487,4.3291014987387371],"text":["Holiday: Valentine's Day<br>Passengers: 1<br>Avg tip: $3.96<br>Total rides: 75004","Holiday: Valentine's Day<br>Passengers: 5<br>Avg tip: $3.94<br>Total rides: 1164","Holiday: Valentine's Day<br>Passengers: 4<br>Avg tip: $4.71<br>Total rides: 889","Holiday: Valentine's Day<br>Passengers: 3<br>Avg tip: $4.52<br>Total rides: 1937","Holiday: Valentine's Day<br>Passengers: 6<br>Avg tip: $4.12<br>Total rides: 819","Holiday: Valentine's Day<br>Passengers: 2<br>Avg tip: $4.33<br>Total rides: 13478"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(253,231,37,1)","opacity":1,"size":[37.795275590551185,10.998522221926137,10.469236773188191,12.171730233073337,10.31834612028605,20.299518365313642],"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(253,231,37,1)"}},"hoveron":"points","name":"Valentine's Day","legendgroup":"Valentine's Day","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":40.840182648401829,"r":7.3059360730593621,"b":37.260273972602747,"l":43.105022831050235},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Average amount of tips per number of passangers","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.75,6.25],"tickmode":"array","ticktext":["1","2","3","4","5","6"],"tickvals":[1,2,3,4,5,6],"categoryorder":"array","categoryarray":["1","2","3","4","5","6"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"Number of passangers","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[3.6074157827103273,5.4520355533743992],"tickmode":"array","ticktext":["4.0","4.5","5.0"],"tickvals":[4,4.5,5],"categoryorder":"array","categoryarray":["4.0","4.5","5.0"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Average amount of the tip, $","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"Holiday name<br />","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"a3d30b00940":{"x":{},"y":{},"colour":{},"type":"scatter"},"a3d752f61b8":{"x":{},"y":{},"colour":{},"size":{},"text":{}}},"cur_data":"a3d30b00940","visdat":{"a3d30b00940":["function (y) ","x"],"a3d752f61b8":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># graph: not interactive version (maybe better for presentation?)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>nyc_tips_passangers <span class="ot">&lt;-</span> nyc <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(tip_amount <span class="sc">&gt;=</span> <span class="dv">0</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>         passenger_count <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>         passenger_count <span class="sc">&lt;</span> <span class="dv">8</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>         payment_type <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(important_hols, <span class="fu">join_by</span>(date <span class="sc">==</span> date), <span class="at">copy =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span> (name, passenger_count) <span class="sc">|&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_tip_amount =</span> <span class="fu">mean</span>(tip_amount, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">total_num =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(name)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> avg_tip_amount, <span class="at">x =</span> passenger_count, <span class="at">color =</span> name)) <span class="sc">+</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">15</span>)) <span class="sc">+</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> total_num), </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">6</span>, <span class="at">by =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"viridis"</span>) <span class="sc">+</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span> (<span class="at">x =</span> <span class="st">"Number of passangers"</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">"Average amount of the tip, $"</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Average amount of tips per number of passangers"</span>,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">color =</span> <span class="st">"Holiday name"</span>,</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">size =</span> <span class="st">"Total number of rides"</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>nyc_tips_passangers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display page-columns page-full">
+<div class="page-columns page-full">
+<figure class="figure page-columns page-full">
+<p class="page-columns page-full"><img src="final_project_files/figure-html/visualisation%202%20tips%20per%20passagers%20not%20interactive-1.png" class="img-fluid figure-img column-body-outset" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+<pre><code>
+
+::: {.cell}
+
+```{.r .cell-code}
+taxi_zones_man &lt;- read_sf("taxi_zones/taxi_zones.shp") |&gt; 
+  st_transform("+proj=aea +lat_1=40 +lat_2=42 +lat_0=40.7 +lon_0=-73.9") |&gt; 
+  filter(borough == "Manhattan")
+
+taxi_zones_nyc &lt;- read_sf("taxi_zones/taxi_zones.shp") |&gt; 
+  st_transform("+proj=aea +lat_1=40 +lat_2=42 +lat_0=40.7 +lon_0=-73.9") </code></pre>
+<p>:::</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>date_nye <span class="ot">&lt;-</span> <span class="st">"2024-12-31"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>nye_pu <span class="ot">&lt;-</span> nyc <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">date =</span> <span class="fu">as_date</span>(tpep_pickup_datetime),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">hours =</span> <span class="fu">hour</span>(tpep_pickup_datetime)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    date <span class="sc">==</span> date_nye</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">rides =</span> <span class="fu">n</span>(),</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">.by =</span> <span class="fu">c</span>(PULocationID, hours)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>nye_do <span class="ot">&lt;-</span> nyc <span class="sc">|&gt;</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">date =</span> <span class="fu">as_date</span>(tpep_pickup_datetime),</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">hours =</span> <span class="fu">hour</span>(tpep_pickup_datetime)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    date <span class="sc">==</span> date_nye</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">rides =</span> <span class="fu">n</span>(),</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">.by =</span> <span class="fu">c</span>(DOLocationID, hours)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>()</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>nye_taxis <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  nye_pu <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">"Pick ups"</span>,</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>                             <span class="at">LocationID =</span> PULocationID) <span class="sc">|&gt;</span> </span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>PULocationID), </span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  nye_do  <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">"Drop offs"</span>,</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>                             <span class="at">LocationID =</span> DOLocationID) <span class="sc">|&gt;</span> </span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>DOLocationID)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="fu">factor</span>(type, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Pick ups"</span>, <span class="st">"Drop offs"</span>)),</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">hour_label =</span> <span class="fu">sprintf</span>(<span class="st">"%02d:00"</span>, hours)</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>nye_taxis</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6,788 × 5
+   hours rides type     LocationID hour_label
+   &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;         &lt;int&gt; &lt;chr&gt;     
+ 1     0     1 Pick ups        215 00:00     
+ 2     0     2 Pick ups        196 00:00     
+ 3     0     1 Pick ups         10 00:00     
+ 4     1    60 Pick ups         68 01:00     
+ 5     1     8 Pick ups        229 01:00     
+ 6     1    22 Pick ups        170 01:00     
+ 7     1     3 Pick ups        116 01:00     
+ 8     2    48 Pick ups         48 02:00     
+ 9     2    13 Pick ups        246 02:00     
+10     2     1 Pick ups        255 02:00     
+# ℹ 6,778 more rows</code></pre>
+</div>
+</div>
+<div class="cell" data-warnings="false">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nye_taxis_man <span class="ot">&lt;-</span> taxi_zones_man <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(nye_taxis, <span class="at">by =</span> <span class="st">"LocationID"</span> ) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rides))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>nye_taxis_nyc <span class="ot">&lt;-</span> taxi_zones_nyc <span class="sc">|&gt;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(nye_taxis, <span class="at">by =</span> <span class="st">"LocationID"</span> ) <span class="sc">|&gt;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rides))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in sf_column %in% names(g): Detected an unexpected many-to-many relationship between `x` and `y`.
+ℹ Row 1 of `x` matches multiple rows in `y`.
+ℹ Row 31 of `y` matches multiple rows in `x`.
+ℹ If a many-to-many relationship is expected, set `relationship =
+  "many-to-many"` to silence this warning.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nye_taxis_nyc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 6719 features and 10 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -27700.26 ymin: -21884.17 xmax: 16890 ymax: 23938.48
+Projected CRS: +proj=aea +lat_1=40 +lat_2=42 +lat_0=40.7 +lon_0=-73.9
+# A tibble: 6,719 × 11
+   OBJECTID Shape_Leng Shape_Area zone           LocationID borough
+ *    &lt;int&gt;      &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;               &lt;int&gt; &lt;chr&gt;  
+ 1        1      0.116   0.000782 Newark Airport          1 EWR    
+ 2        1      0.116   0.000782 Newark Airport          1 EWR    
+ 3        1      0.116   0.000782 Newark Airport          1 EWR    
+ 4        1      0.116   0.000782 Newark Airport          1 EWR    
+ 5        1      0.116   0.000782 Newark Airport          1 EWR    
+ 6        1      0.116   0.000782 Newark Airport          1 EWR    
+ 7        1      0.116   0.000782 Newark Airport          1 EWR    
+ 8        1      0.116   0.000782 Newark Airport          1 EWR    
+ 9        1      0.116   0.000782 Newark Airport          1 EWR    
+10        1      0.116   0.000782 Newark Airport          1 EWR    
+# ℹ 6,709 more rows
+# ℹ 5 more variables: geometry &lt;MULTIPOLYGON [m]&gt;, hours &lt;dbl&gt;, rides &lt;dbl&gt;,
+#   type &lt;fct&gt;, hour_label &lt;chr&gt;</code></pre>
+</div>
+</div>
+<div class="cell" data-warnings="false">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nye_map_nyc <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> taxi_zones_nyc, <span class="at">color =</span> <span class="st">"white"</span> ) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> nye_taxis_nyc, <span class="fu">aes</span>(<span class="at">fill =</span> rides), <span class="at">color =</span> <span class="st">"white"</span> ) <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>type) <span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"turbo"</span>) <span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transition_manual</span>(hour_label) <span class="sc">+</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ease_aes</span>(<span class="st">"linear"</span>)  <span class="sc">+</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"New Year's Eve NYC taxi"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Hours : {current_frame}"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Rides"</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">9</span> , <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">6</span>)),</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="fu">animate</span>(nye_map_nyc, <span class="at">nframes =</span> <span class="dv">48</span>, <span class="at">fps =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fqbaviderv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#fqbaviderv table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#fqbaviderv thead, #fqbaviderv tbody, #fqbaviderv tfoot, #fqbaviderv tr, #fqbaviderv td, #fqbaviderv th {
-  border-style: none;
-}
-
-#fqbaviderv p {
-  margin: 0;
-  padding: 0;
-}
-
-#fqbaviderv .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#fqbaviderv .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#fqbaviderv .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#fqbaviderv .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#fqbaviderv .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#fqbaviderv .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#fqbaviderv .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#fqbaviderv .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#fqbaviderv .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#fqbaviderv .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#fqbaviderv .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#fqbaviderv .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#fqbaviderv .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#fqbaviderv .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#fqbaviderv .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#fqbaviderv .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#fqbaviderv .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#fqbaviderv .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#fqbaviderv .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#fqbaviderv .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#fqbaviderv .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#fqbaviderv .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#fqbaviderv .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#fqbaviderv .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#fqbaviderv .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#fqbaviderv .gt_left {
-  text-align: left;
-}
-
-#fqbaviderv .gt_center {
-  text-align: center;
-}
-
-#fqbaviderv .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#fqbaviderv .gt_font_normal {
-  font-weight: normal;
-}
-
-#fqbaviderv .gt_font_bold {
-  font-weight: bold;
-}
-
-#fqbaviderv .gt_font_italic {
-  font-style: italic;
-}
-
-#fqbaviderv .gt_super {
-  font-size: 65%;
-}
-
-#fqbaviderv .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#fqbaviderv .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#fqbaviderv .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#fqbaviderv .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#fqbaviderv .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#fqbaviderv .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#fqbaviderv .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#fqbaviderv .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#fqbaviderv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-
-<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="gt_col_headings header">
-<th id="VendorID" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">VendorID</th>
-<th id="tpep_pickup_datetime" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">tpep_pickup_datetime</th>
-<th id="tpep_dropoff_datetime" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">tpep_dropoff_datetime</th>
-<th id="passenger_count" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">passenger_count</th>
-<th id="trip_distance" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">trip_distance</th>
-<th id="RatecodeID" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">RatecodeID</th>
-<th id="store_and_fwd_flag" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">store_and_fwd_flag</th>
-<th id="PULocationID" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">PULocationID</th>
-<th id="DOLocationID" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">DOLocationID</th>
-<th id="payment_type" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">payment_type</th>
-<th id="fare_amount" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">fare_amount</th>
-<th id="extra" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">extra</th>
-<th id="mta_tax" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">mta_tax</th>
-<th id="tip_amount" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">tip_amount</th>
-<th id="tolls_amount" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">tolls_amount</th>
-<th id="improvement_surcharge" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">improvement_surcharge</th>
-<th id="total_amount" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">total_amount</th>
-<th id="congestion_surcharge" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">congestion_surcharge</th>
-<th id="Airport_fee" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Airport_fee</th>
-<th id="month" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">month</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_right" headers="VendorID">2</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:57:55</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 01:17:43</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">1.72</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">186</td>
-<td class="gt_row gt_right" headers="DOLocationID">79</td>
-<td class="gt_row gt_right" headers="payment_type">2</td>
-<td class="gt_row gt_right" headers="fare_amount">17.7</td>
-<td class="gt_row gt_right" headers="extra">1.0</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">0.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">22.70</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="VendorID">1</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:03:00</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:09:36</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">1.80</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">140</td>
-<td class="gt_row gt_right" headers="DOLocationID">236</td>
-<td class="gt_row gt_right" headers="payment_type">1</td>
-<td class="gt_row gt_right" headers="fare_amount">10.0</td>
-<td class="gt_row gt_right" headers="extra">3.5</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">3.75</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">18.75</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="VendorID">1</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:17:06</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:35:01</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">4.70</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">236</td>
-<td class="gt_row gt_right" headers="DOLocationID">79</td>
-<td class="gt_row gt_right" headers="payment_type">1</td>
-<td class="gt_row gt_right" headers="fare_amount">23.3</td>
-<td class="gt_row gt_right" headers="extra">3.5</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">3.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">31.30</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="VendorID">1</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:36:38</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:44:56</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">1.40</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">79</td>
-<td class="gt_row gt_right" headers="DOLocationID">211</td>
-<td class="gt_row gt_right" headers="payment_type">1</td>
-<td class="gt_row gt_right" headers="fare_amount">10.0</td>
-<td class="gt_row gt_right" headers="extra">3.5</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">2.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">17.00</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="VendorID">1</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:46:51</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:52:57</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">0.80</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">211</td>
-<td class="gt_row gt_right" headers="DOLocationID">148</td>
-<td class="gt_row gt_right" headers="payment_type">1</td>
-<td class="gt_row gt_right" headers="fare_amount">7.9</td>
-<td class="gt_row gt_right" headers="extra">3.5</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">3.20</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">16.10</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="VendorID">1</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:54:08</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 01:26:31</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">4.70</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">148</td>
-<td class="gt_row gt_right" headers="DOLocationID">141</td>
-<td class="gt_row gt_right" headers="payment_type">1</td>
-<td class="gt_row gt_right" headers="fare_amount">29.6</td>
-<td class="gt_row gt_right" headers="extra">3.5</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">6.90</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">41.50</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="VendorID">2</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:49:44</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 01:15:47</td>
-<td class="gt_row gt_right" headers="passenger_count">2</td>
-<td class="gt_row gt_right" headers="trip_distance">10.82</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">138</td>
-<td class="gt_row gt_right" headers="DOLocationID">181</td>
-<td class="gt_row gt_right" headers="payment_type">1</td>
-<td class="gt_row gt_right" headers="fare_amount">45.7</td>
-<td class="gt_row gt_right" headers="extra">6.0</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">10.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">64.95</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">0.0</td>
-<td class="gt_row gt_right" headers="Airport_fee">1.75</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="VendorID">1</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:30:40</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:58:40</td>
-<td class="gt_row gt_right" headers="passenger_count">0</td>
-<td class="gt_row gt_right" headers="trip_distance">3.00</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">246</td>
-<td class="gt_row gt_right" headers="DOLocationID">231</td>
-<td class="gt_row gt_right" headers="payment_type">2</td>
-<td class="gt_row gt_right" headers="fare_amount">25.4</td>
-<td class="gt_row gt_right" headers="extra">3.5</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">0.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">30.40</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="VendorID">2</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:26:01</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:54:12</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">5.44</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">161</td>
-<td class="gt_row gt_right" headers="DOLocationID">261</td>
-<td class="gt_row gt_right" headers="payment_type">2</td>
-<td class="gt_row gt_right" headers="fare_amount">31.0</td>
-<td class="gt_row gt_right" headers="extra">1.0</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">0.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">36.00</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="VendorID">2</td>
-<td class="gt_row gt_right" headers="tpep_pickup_datetime">2024-01-01 00:28:08</td>
-<td class="gt_row gt_right" headers="tpep_dropoff_datetime">2024-01-01 00:29:16</td>
-<td class="gt_row gt_right" headers="passenger_count">1</td>
-<td class="gt_row gt_right" headers="trip_distance">0.04</td>
-<td class="gt_row gt_right" headers="RatecodeID">1</td>
-<td class="gt_row gt_left" headers="store_and_fwd_flag">N</td>
-<td class="gt_row gt_right" headers="PULocationID">113</td>
-<td class="gt_row gt_right" headers="DOLocationID">113</td>
-<td class="gt_row gt_right" headers="payment_type">2</td>
-<td class="gt_row gt_right" headers="fare_amount">3.0</td>
-<td class="gt_row gt_right" headers="extra">1.0</td>
-<td class="gt_row gt_right" headers="mta_tax">0.5</td>
-<td class="gt_row gt_right" headers="tip_amount">0.00</td>
-<td class="gt_row gt_right" headers="tolls_amount">0</td>
-<td class="gt_row gt_right" headers="improvement_surcharge">1</td>
-<td class="gt_row gt_right" headers="total_amount">8.00</td>
-<td class="gt_row gt_right" headers="congestion_surcharge">2.5</td>
-<td class="gt_row gt_right" headers="Airport_fee">0.00</td>
-<td class="gt_row gt_right" headers="month">1</td>
-</tr>
-</tbody>
-</table>
-
+<div>
+<figure class="figure">
+<p><img src="final_project_files/figure-html/nyc%20taxis%20map-1.gif" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-warnings="false">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> taxi_zones_man <span class="sc">|&gt;</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(LocationID <span class="sc">==</span> <span class="dv">161</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_centroid</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_coordinates</span>() <span class="sc">|&gt;</span>         </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">image =</span> <span class="st">"https://cdn-icons-png.flaticon.com/512/3751/3751541.png"</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nye_map_man <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> taxi_zones_man, <span class="at">color =</span> <span class="st">"white"</span> ) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> nye_taxis_man, <span class="fu">aes</span>(<span class="at">fill =</span> rides), <span class="at">color =</span> <span class="st">"white"</span> ) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>type) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"turbo"</span>) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transition_manual</span>(hour_label) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ease_aes</span>(<span class="st">"linear"</span>) <span class="sc">+</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_image</span>(<span class="at">data =</span> tree, <span class="fu">aes</span>(<span class="at">x =</span>X, <span class="at">y =</span> Y, <span class="at">image =</span> image), <span class="at">size =</span> <span class="fl">0.05</span>) <span class="sc">+</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"New Year's Eve in Manhattan"</span>,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Hours : {current_frame}"</span>,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Rides"</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">9</span> , <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">6</span>)),</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="fu">animate</span>(nye_map_man, <span class="at">nframes =</span> <span class="dv">48</span>, <span class="at">fps =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="final_project_files/figure-html/man%20taxis%20map-1.gif" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
 </div>
