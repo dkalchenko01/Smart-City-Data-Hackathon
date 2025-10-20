@@ -26,7 +26,10 @@ pacman::p_load(
   fs,
   ggplot,
   gt,
-  plotly
+  plotly,
+  ggridges,
+  viridis,
+  colorRamps
 )
 
 ```
@@ -37,68 +40,76 @@ pacman::p_load(
 #| message: false
 #| cache: false
 
+#nyc
 con <- dbConnect(duckdb(), shutdown = TRUE)
 nyc <- tbl(con, "read_parquet('nyc-taxi-2024/*/*.parquet', hive_partitioning = true)")
 
-nyc |> head(10)
+nyc <- nyc |> 
+  mutate(date = date(tpep_pickup_datetime)) |> 
+  filter(year(date) == 2024)
 
+
+#hols
+holc_to_delete = c("Administrative Professionals Day", "Columbus Day", "Tax Day", "Labour Day", 
+                   "Martin Luther King Jr. Day", "Washington's Birthday", "Election Day")
+
+holidays <- read.csv("holidays.csv") |> 
+  mutate(date = date(as.Date(date)))  |> 
+  filter(!(name %in% holc_to_delete))
 ```
 
+<br>
+
 ```{r}
-#| label: num of rides
+#| label: visualisation 1 num of rides
 #| echo: true
 #| message: false
 #| cache: false
 #| fig.height: 6
 #| fig.width: 6
 #| column: body-outset
+#| warning: false
 
-# data prep
-
-holidays <- read.csv("holidays.csv") |> 
-  mutate(date = date(as.Date(date)))
-
-nyc <- nyc |> 
-  mutate(date = date(tpep_pickup_datetime)) |> 
-  filter(year(date) == 2024)
-
-num_of_rides_not_hols <- nyc |> 
-  filter(!(date %in% holidays$date)) |> 
+# data prep: getting the mean num of rides per day
+num_of_rides_total <- nyc |>
   group_by(date) |> 
   summarise(num_of_rides = n())
 
-mean_num_of_rides <- mean(dplyr::pull(num_of_rides_not_hols, var = num_of_rides))
+mean_num_of_rides <- mean(dplyr::pull(num_of_rides_total, var = num_of_rides))
 
 
-line <- data.frame(y = c(mean_num_of_rides+1500), label = c("Mean number of rides per day"))
-
-nyc_num_of_rides_hols <- nyc |> 
+# graph
+nyc_num_of_rides_hols_graph <- nyc |> 
   group_by(date) |> 
   summarise(num_of_rides = n()) |> 
   right_join(holidays, join_by(date == date), copy = TRUE) |> 
   
   ggplot() +
-  # geom_col(aes(x = reorder(name, date),
-  #            y = num_of_rides)) +
-  geom_point(aes(x = reorder(name, -num_of_rides), y = num_of_rides),
-             color = "blue4", 
+  geom_point(aes(x = reorder(name, date), 
+                 y = num_of_rides,
+                 text = paste0("Holiday: ", name, "<br>Date: ", date, "<br>Number of rides: ", num_of_rides)),
+             color = "#39568CFF",
              size = 3.5) + 
-  geom_segment(aes(x = reorder(name, -num_of_rides), 
-                    xend = reorder(name, -num_of_rides), 
+  geom_segment(aes(x = reorder(name, date), 
+                    xend = reorder(name, date), 
                     y = 0, 
                     yend = num_of_rides),
-               color = "blue4",
+               color = "#39568CFF",
                linewidth = 1,
                alpha = 0.5) +
+  scale_color_viridis_d(option = "viridis") +
   geom_hline(yintercept = mean_num_of_rides, 
              color = "red4",
              linewidth = 0.7,
              alpha = 0.5,
              linetype = "dotted") +
   geom_text(
-    data = line,
-    aes(x = 21, y = y, label = label),
-    hjust = 0, vjust = 0, colour = "red4", size = 2.5
+    data = data.frame(y = c(mean_num_of_rides+2200), label = c(paste0("Mean number of rides per day: ", round(mean_num_of_rides)))),
+    aes(x = 14, y = y, label = label),
+    hjust = 0, 
+    vjust = 0, 
+    colour = "red4", 
+    size = 3.5
   ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 40, vjust = 0.5, hjust = 1)) +
@@ -107,5 +118,98 @@ nyc_num_of_rides_hols <- nyc |>
        y = "Number of taxi rides",
        title = "Total number of taxi rides per holiday")
 
-ggplotly(data = nyc_num_of_rides_hols)
+ggplotly(data = nyc_num_of_rides_hols_graph, tooltip = "text")
+
+```
+
+<br>
+
+```{r}
+#| label: visualisation 2 tips per passagers interactive
+#| echo: true
+#| message: false
+#| cache: false
+#| fig.height: 9
+#| fig.width: 12
+#| column: body-outset
+#| warning: false
+
+# data prep: choosing the holidays
+important_hols <- holidays |> 
+  filter(name %in% c("Halloween", "Valentine's Day", "New Year's Eve", "Christmas Eve", "Thanksgiving Day"))
+
+
+# graph: interactive version
+nyc_tips_passangers <- nyc |>
+  filter(tip_amount >= 0,
+         passenger_count > 0,
+         passenger_count < 8,
+         payment_type == 1) |> 
+  left_join(important_hols, join_by(date == date), copy = TRUE) |>
+  group_by (name, passenger_count) |>
+  summarise(avg_tip_amount = mean(tip_amount, na.rm = TRUE),
+            total_num = n()) |>
+  filter(!is.na(name)) |> 
+
+  ggplot(aes(y = avg_tip_amount, x = passenger_count, color = name)) +
+  geom_line(linewidth = 1.5, alpha=0.5) +
+  scale_size(range = c(2, 10)) +
+  geom_point(aes(size = total_num, 
+                 text = paste0("Holiday: ", name, "<br>Passengers: ", passenger_count, "<br>Avg tip: $", round(avg_tip_amount,2), "<br>Total rides: ", total_num)), 
+             alpha = 1) +
+  scale_x_continuous(breaks = seq(1, 6, by = 1)) +
+  scale_color_viridis_d(option = "viridis") +
+  theme_minimal() +
+  labs (x = "Number of passangers",
+        y = "Average amount of the tip, $",
+        title = "Average amount of tips per number of passangers",
+        color = "Holiday name",
+        size = ""
+        )
+  
+
+ggplotly(data = nyc_tips_passangers, tooltip = "text")
+```
+
+```{r}
+#| label: visualisation 2 tips per passagers not interactive
+#| echo: true
+#| message: false
+#| cache: false
+#| fig.height: 6
+#| fig.width: 12
+#| column: body-outset
+
+
+# graph: not interactive version (maybe better for presentation?)
+nyc_tips_passangers <- nyc |>
+  filter(tip_amount >= 0,
+         passenger_count > 0,
+         passenger_count < 8,
+         payment_type == 1) |> 
+  left_join(important_hols, join_by(date == date), copy = TRUE) |>
+  group_by (name, passenger_count) |>
+  summarise(avg_tip_amount = mean(tip_amount, na.rm = TRUE),
+            total_num = n()) |>
+  filter(!is.na(name)) |> 
+
+  ggplot(aes(y = avg_tip_amount, x = passenger_count, color = name)) +
+  geom_line(linewidth = 2, alpha=0.5) +
+  scale_size(range = c(4, 15)) +
+  geom_point(aes(size = total_num), 
+             alpha = 1) +
+  scale_x_continuous(breaks = seq(1, 6, by = 1)) +
+  scale_color_viridis_d(option = "viridis") +
+  theme_minimal() +
+  labs (x = "Number of passangers",
+        y = "Average amount of the tip, $",
+        title = "Average amount of tips per number of passangers",
+        color = "Holiday name",
+        size = "Total number of rides"
+        )
+  
+
+nyc_tips_passangers
+
+
 ```
