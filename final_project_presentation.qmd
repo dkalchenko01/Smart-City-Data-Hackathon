@@ -7,10 +7,11 @@ format:
 editor: visual
 ---
 
-## Data 
+## Data
+
 :::: {.columns}
 ::: {.column width="60%"}
-We took data about New York taxis from [Open NYC Taxi dataset](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) (*so unexpected!*) and wanted to analyze **changes in rides and tips on holidays**. 
+We took data about New York taxis from [Open NYC Taxi dataset](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) (*so unexpected!*) and wanted to analyze **changes in rides and tips on holidays**.
 :::
 
 ::: {.column width="40%"}
@@ -83,9 +84,9 @@ Analyzing the workload of New York City’s taxi system on public holidays to id
 
 ## Graph #1: Number of rides on different holidays
 
-Here we counted the number of rides completed on different holidays. We were curious whether they differ from the average number of rides per day. 
+Here we counted the number of rides completed on different holidays. We were curious whether they differ from the average number of rides per day.
 
----
+------------------------------------------------------------------------
 
 ::: {style="font-size: 60%;"}
 Interestingly, the holiday with the most rides is **Halloween**. Together with the **Valentine's Day** and **Mother's Day**, those three are the only holidays with the number of rides above or equal to average. This means that people generally do not use taxis on public holidays, preferring to stay at home. For instance, number of taxi rides on **Christmas Day** is more than two times lower then average.
@@ -154,19 +155,16 @@ ggplotly(data = nyc_num_of_rides_hols_graph, tooltip = "text")
 
 ```
 
-
-## Graph #2: Average tips on most popular holidays 
+## Graph #2: Average tips on most popular holidays
 
 On this visualization we explored the way the amount of tips differs on various holidays and for different numbers of people.
 
---- 
+------------------------------------------------------------------------
 
 ::: {style="font-size: 70%;"}
-
-The vast majority of people are riding alone on holidays, but the amount of tips they give is generally lower. 
+The vast majority of people are riding alone on holidays, but the amount of tips they give is generally lower.
 
 The "most generous" are **4-people groups** on the **New Year's Day**, the "least generous" - **5-people groups** on **Christmas Eve**.
-
 :::
 
 ```{r}
@@ -234,7 +232,7 @@ A congestion surcharge is added to NYC taxi and for-hire vehicle trips in the Ma
 ::::
 :::::
 
----
+------------------------------------------------------------------------
 
 ::: {style="font-size: 70%;"}
 We can see a surge on the *"in"* graph at 5-6 p. m., meaning that people are entering Manhattan to party. The *"out"* graph is rather stable throughout the evening, whereas the *"inside"* one peaks at 9-10 p. m., when people go out.
@@ -297,14 +295,14 @@ ggplot(
 
 ## Graph #4: THE map! - Most rides by NYC zones on the New Year's Eve
 
-Here we were analyzing the number of rides per each hour on the New Year's Eve 2024. 
+Here we were analyzing the number of rides per each hour on the New Year's Eve 2024.
 
-The data is grouped by *hour and region*; the region changes color according to the number of rides and when there is no data, it stays grey. 
+The data is grouped by *hour and region*; the region changes color according to the number of rides and when there is no data, it stays grey.
 
----
+------------------------------------------------------------------------
 
 ::: {style="font-size: 70%;"}
-We can see a lot of rides on the Manhattan and its surrounding areas throughout the day. There were also many rides around the airport, though the number of drop-offs became super-low at the evening since no one flies on the New Year. 
+We can see a lot of rides on the Manhattan and its surrounding areas throughout the day. There were also many rides around the airport, though the number of drop-offs became super-low at the evening since no one flies on the New Year.
 :::
 
 ```{r}
@@ -372,7 +370,7 @@ nye_taxis <- bind_rows(
     hour_label = sprintf("%02d:00", hours)
   )
 ```
- 
+
 ```{r}
 #| label: nye with taxis data
 #| echo: false
@@ -421,7 +419,7 @@ animate(nye_map_nyc, nframes = 48, fps = 2)
 
 ## Graph #5: Manhattan on New Year's Eve {.smaller}
 
-It was oblivious, that most rides were done in the Manhattan, so we included the close-up of the Manhattan region.
+It was oblivious, that most rides were done in the Manhattan, especially after 1 a. m., so we included the close-up of the Manhattan region.
 
 ::::: {.columns}
 :::: {.column width = "50%"}
@@ -434,10 +432,10 @@ We were also curious whether people often go to see the Christmas Tree near the 
 ::::
 :::::
 
----
+------------------------------------------------------------------------
 
 ::: {style="font-size: 70%;"}
-Even though there is a great number of rides all around the Manhattan, the center part near the Christmas Tree is definetely among the most popular ones.
+Even though there is a great number of rides all around the Manhattan, the center part near the Christmas Tree is definitely among the most popular ones.
 :::
 
 ```{r}
@@ -482,22 +480,11 @@ animate(nye_map_man, nframes = 48, fps = 2)
 ```
 
 ## Our suggestions {.smaller}
-::: {.incremental}
-- Contrary to what we were expecting, the number of rides on public holidays are in general lower than average, so the drivers can be given extra days off during that time.
-- To maximize their profits from tips, drivers are advised to take groups of **2, 3 or 4** people on *Christmas Eve*, *New Year's Eve* and *Valentine's Day*, and groups of **2 or 4** people on *Halloween* and *Thanksgiving Day*. Drivers are strongly discouraged to take **5 people** on *Christmas Eve* :)
-- Taxi rides are generally most popular on *Manhattan*, and considering the **New Year's Eve**, the peak hours are **5-6 p. m.** to enter the Manhattan and **9-10 p. m.** to commute inside the area. Drivers are advised to keep this in mind with a view of maximizing their profits.
+
+::: incremental
+-   Contrary to what we were expecting, the number of rides on public holidays are in general lower than average, so the drivers can be given extra days off during that time.
+-   To maximize their profits from tips, drivers are advised to take groups of **2, 3 or 4** people on *Christmas Eve*, *New Year's Eve* and *Valentine's Day*, and groups of **2 or 4** people on *Halloween* and *Thanksgiving Day*. Drivers are strongly discouraged to take **5 people** on *Christmas Eve* :)
+-   Taxi rides are generally most popular on *Manhattan*, and considering the **New Year's Eve**, the peak hours are **5-6 p. m.** to enter the Manhattan and **9-10 p. m.** to commute inside the area. Drivers are advised to keep this in mind with a view of maximizing their profits.
 :::
 
 # That is all! Ask your questions :)
-
-
-
-
-
-
-
-
-
-
-
-
