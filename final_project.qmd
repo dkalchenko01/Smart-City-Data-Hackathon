@@ -5,7 +5,20 @@ author: Diana Aldoshyna, Daryna Kalchenko, Mariia Kobycheva
 date: today
 ---
 
-<br>
+# Data
+
+:::: {.columns}
+::: {.column width="69%"}
+We took data about New York taxis from [Open NYC Taxi dataset](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) (*so unexpected!*) and wanted to analyze **changes in rides and tips on holidays**. 
+
+We took some of the most common holidays in the USA from [this API](https://rapidapi.com/almann/api/holidays18). We altered this list a bit, deleting less popular holidays, such as Administrative Professionals Day, Columbus Day, Tax Day, etc.
+:::
+
+::: {.column width="31%"}
+![](pics\meme1.jpg)
+:::
+::::
+
 
 ```{r}
 #| label: setup
@@ -43,6 +56,8 @@ pacman::p_load(
 #| echo: true
 #| message: false
 #| cache: false
+#| code-fold: true
+
 
 #nyc
 con <- dbConnect(duckdb(), shutdown = TRUE)
@@ -60,9 +75,14 @@ holc_to_delete = c("Administrative Professionals Day", "Columbus Day", "Tax Day"
 holidays <- read.csv("holidays.csv") |> 
   mutate(date = date(as.Date(date)))  |> 
   filter(!(name %in% holc_to_delete))
+
 ```
 
-<br>
+# Graph #1: Number of rides on different holidays
+
+Here we counted the number of rides completed on different holidays. We were curious whether they differ from the average number of rides per day. 
+
+Interestingly, the holiday with the most rides is **Halloween**. Together with the **Valentine's Day** and **Mother's Day**, those three are the only holidays with the number of rides above or equal to average. 
 
 ```{r}
 #| label: visualisation 1 num of rides
@@ -73,6 +93,8 @@ holidays <- read.csv("holidays.csv") |>
 #| fig.width: 6
 #| column: body-outset
 #| warning: false
+#| code-fold: true
+
 
 # data prep: getting the mean num of rides per day
 num_of_rides_total <- nyc |>
@@ -126,7 +148,11 @@ ggplotly(data = nyc_num_of_rides_hols_graph, tooltip = "text")
 
 ```
 
-<br>
+# Graph #2: Average amount of tips for different numbers of people on most popular holidays
+
+Oh this visualization we wanted to explore the way the amount of tips differs on various holidays and for different numbers of people. It can be seen from the graph that most rides are ordered by single people with the number of rides decreasing as the number of people goes up. The jump between one and two people is quite dramatic, while the number of next groups of people does not vary much. 
+
+The "most generous" were the **four-people groups** on the **New Year's Day** and the "least generous" - **five-people groups** on **Christmas Eve**.
 
 ```{r}
 #| label: visualisation 2 tips per passagers interactive
@@ -137,6 +163,8 @@ ggplotly(data = nyc_num_of_rides_hols_graph, tooltip = "text")
 #| fig.width: 12
 #| column: body-outset
 #| warning: false
+#| code-fold: true
+
 
 # data prep: choosing the holidays
 important_hols <- holidays |> 
@@ -150,9 +178,9 @@ nyc_tips_passangers <- nyc |>
          passenger_count < 8,
          payment_type == 1) |> 
   left_join(important_hols, join_by(date == date), copy = TRUE) |>
-  group_by (name, passenger_count) |>
   summarise(avg_tip_amount = mean(tip_amount, na.rm = TRUE),
-            total_num = n()) |>
+            total_num = n(),
+            .by = c(name, passenger_count)) |>
   filter(!is.na(name)) |> 
 
   ggplot(aes(y = avg_tip_amount, x = passenger_count, color = name)) +
@@ -173,7 +201,9 @@ nyc_tips_passangers <- nyc |>
   
 
 ggplotly(data = nyc_tips_passangers, tooltip = "text")
+
 ```
+
 
 ```{r}
 #| label: visualisation 2 tips per passagers not interactive
@@ -183,6 +213,7 @@ ggplotly(data = nyc_tips_passangers, tooltip = "text")
 #| fig.height: 6
 #| fig.width: 12
 #| column: body-outset
+#| code-fold: true
 
 
 # graph: not interactive version (maybe better for presentation?)
@@ -217,14 +248,87 @@ nyc_tips_passangers
 
 
 ```
+## Graph #3: Entering and exiting Manhattan
+
+Here we used such thing as *congestion surcharge* to define the number of rides in, out and around the Manhattan on the New Year's Eve.
+
+::: {.callout-note}
+A congestion surcharge is added to NYC taxi and for-hire vehicle trips in the Manhattan Congestion Zone (south of 96th Street). For taxis, the surcharge is $2.50 per trip, and for other for-hire vehicles (like Uber/Lyft), it is $2.75.
+:::
+
+![](pics\map.png)
+
+```{r}
+#| label: cong-fee
+#| code-fold: true
+
+taxi_zones_man <- read_sf("taxi_zones/taxi_zones.shp") |> 
+  st_transform("+proj=aea +lat_1=40 +lat_2=42 +lat_0=40.7 +lon_0=-73.9") |> 
+  filter(borough == "Manhattan")
+
+manhattan <- taxi_zones_man$OBJECTID
+
+cong_fees <- nyc |>
+  select(
+    PULocationID, DOLocationID,
+    tpep_pickup_datetime, tpep_dropoff_datetime,
+    congestion_surcharge
+  ) |>
+  filter((PULocationID %in% manhattan | DOLocationID %in% manhattan) 
+         & congestion_surcharge == 2.5
+         & date(tpep_pickup_datetime) == "2024-12-31"
+         & date(tpep_dropoff_datetime) == "2024-12-31") |>
+  mutate(
+    type = case_when(
+      PULocationID %in% manhattan & DOLocationID %in% manhattan ~ "inside",
+      PULocationID %in% manhattan ~ "out",
+      DOLocationID %in% manhattan ~ "in"
+    ),
+    trip_time = case_when(
+      type == "inside" ~ tpep_pickup_datetime,
+      type == "out" ~ tpep_pickup_datetime,
+      type == "in"  ~ tpep_dropoff_datetime
+    )
+  ) |>
+  collect()
+
+ggplot(
+  data = cong_fees,
+  aes(x=trip_time,
+      group=type, 
+      fill=type)) +
+  geom_density(adjust=1.5, alpha = 0.4) +
+  scale_x_datetime(
+  date_breaks = "4 hours",
+  date_labels = "%H:%M"
+  ) +
+  scale_fill_viridis_d(option = "viridis") +
+  theme_minimal() +
+  labs(
+    title = "Rides on the Manhattan on New Year's Eve based on congestion surcharge",
+    x = "Time of trip",
+    y = "Trips",
+    fill = "Type of trip"
+  )
+
 ```
 
+## Graph #4: THE map! - Most rides by NYC zones on the New Year's Eve
+
+Here we were analyzing the number of rides per each hour on the New Year's Eve 2024. 
+
+The data is grouped by *hour and region*; the region changes color according to the number of rides and when there is no data, it stays grey. 
+
+We can see a lot of rides on the Manhattan and its surrounding areas throughout the day. There were also many rides around the airport, though the number of drop-offs became super-low at the evening since no one flies on the New Year. 
 
 ```{r}
 #| label: taxi zones
 #| echo: true
 #| message: false
 #| cache: false
+#| warning: false
+#| code-fold: true
+
 
 taxi_zones_man <- read_sf("taxi_zones/taxi_zones.shp") |> 
   st_transform("+proj=aea +lat_1=40 +lat_2=42 +lat_0=40.7 +lon_0=-73.9") |> 
@@ -240,6 +344,10 @@ taxi_zones_nyc <- read_sf("taxi_zones/taxi_zones.shp") |>
 #| echo: true
 #| message: false
 #| cache: false
+#| warning: false
+#| code-fold: true
+
+
 date_nye <- "2024-12-31"
 nye_pu <- nyc |> 
   mutate(
@@ -281,9 +389,6 @@ nye_taxis <- bind_rows(
     type = factor(type, levels = c("Pick ups", "Drop offs")),
     hour_label = sprintf("%02d:00", hours)
   )
-
-
-nye_taxis
 ```
 
 
@@ -293,7 +398,9 @@ nye_taxis
 #| label: nye with taxis data
 #| echo: true
 #| cache: false
-#| warnings: false
+#| warning: false
+#| code-fold: true
+
 
 nye_taxis_man <- taxi_zones_man |>
   left_join(nye_taxis, by = "LocationID" ) |>
@@ -303,7 +410,6 @@ nye_taxis_nyc <- taxi_zones_nyc |>
   left_join(nye_taxis, by = "LocationID" ) |>
   filter(!is.na(rides))
 
-nye_taxis_nyc
 ```
 
 
@@ -312,7 +418,10 @@ nye_taxis_nyc
 #| echo: true
 #| message: false
 #| cache: false
-#| warnings: false
+#| warning: false
+#| code-fold: true
+
+
 nye_map_nyc <- ggplot() +
   geom_sf(data = taxi_zones_nyc, color = "white" ) +
   geom_sf(data = nye_taxis_nyc, aes(fill = rides), color = "white" ) +
@@ -334,12 +443,31 @@ nye_map_nyc <- ggplot() +
   
 animate(nye_map_nyc, nframes = 48, fps = 2)
 ```
+
+## Graph #5: Manhattan on New Year's Eve
+
+It was oblivious, that most rides were done in the Manhattan, especially after 1 a. m., so we included the close-up of the Manhattan region.
+
+::::: {.columns}
+:::: {.column width = "60%"}
+
+We were also curious whether people often go to see the Christmas Tree near the Rockefeller Center, so we put a Christmas tree emoji where it is located.
+
+::::
+:::: {.column width = "40%"}
+![](pics/tree.jpg)
+::::
+:::::
+
 ```{r}
 #| label: man taxis map
 #| echo: true
 #| cache: false
 #| message: false
-#| warnings: false
+#| warning: false
+#| code-fold: true
+
+
 tree <- taxi_zones_man |> 
   filter(LocationID == 161) |> 
   st_centroid() |> 
@@ -373,59 +501,7 @@ animate(nye_map_man, nframes = 48, fps = 2)
 ```
 
 
-```
 
-```{r}
-#| label: cong-fee
-#| code-fold: true
-
-
-manhattan <- c(4, 12, 13, 24, 41, 42, 43, 45, 48, 50, 68, 74, 75, 79, 87, 88, 90, 100, 103, 107, 113, 114, 116, 120, 125, 127, 128, 137, 140, 141, 142, 143, 144, 148, 151, 152, 153, 158, 161, 162, 163, 164, 166, 170, 186, 194, 202, 209, 211, 224, 229, 230, 231, 232, 233, 234, 236, 237, 238, 239, 243, 244, 246, 249, 261, 262, 263)
-
-nyc |> glimpse()
- 
-
-cong_fees <- nyc |>
-  select(
-    PULocationID, DOLocationID,
-    tpep_pickup_datetime, tpep_dropoff_datetime,
-    congestion_surcharge
-  ) |>
-  filter((PULocationID %in% manhattan | DOLocationID %in% manhattan) 
-         & congestion_surcharge == 2.5
-         & date(tpep_pickup_datetime) %in% c("2024-12-31", "2025-01-01")
-         & date(tpep_dropoff_datetime) %in% c("2024-12-31", "2025-01-01")) |>
-  mutate(
-    type = case_when(
-      PULocationID %in% manhattan ~ "out",
-      DOLocationID %in% manhattan ~ "in"
-    ),
-    trip_time = case_when(
-      type == "out" ~ tpep_pickup_datetime,
-      type == "in"  ~ tpep_dropoff_datetime
-    )
-  ) |>
-  collect()
-
-#y = after_stat(count)
-
-ggplot(
-  data = cong_fees,
-  aes(x=trip_time, group=type, fill=type)) +
-  geom_density(adjust=1.5, alpha = 0.4) +
-  scale_x_datetime(
-  date_breaks = "4 hours",
-  date_labels = "%H:%M"
-  ) +
-  theme_minimal() +
-  labs(
-    title = "Entering and exiting the Manhattan on New Year's Eve based on congestion surcharge",
-    x = "Time of trip",
-    y = "Trip count",
-    fill = "Type of trip"
-  )
-
-```
 
 
 

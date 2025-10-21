@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="final_project_presentation_files/libs/clipboard/clipboard.min.js"></script>
+<script src="final_project_presentation_files/libs/quarto-html/tabby.min.js"></script>
+<script src="final_project_presentation_files/libs/quarto-html/popper.min.js"></script>
+<script src="final_project_presentation_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="final_project_presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="final_project_presentation_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="final_project_presentation_files/libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.24">
+
+  <meta name="author" content="Diana Aldoshyna, Daryna Kalchenko, Mariia Kobycheva">
+  <title>Holidays in New York</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="final_project_presentation_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="final_project_presentation_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="final_project_presentation_files/libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
+  <link href="final_project_presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="final_project_presentation_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="final_project_presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="final_project_presentation_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <link href="final_project_presentation_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+  <script src="final_project_presentation_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+  <script src="final_project_presentation_files/libs/plotly-binding-4.11.0/plotly.js"></script>
+  <script src="final_project_presentation_files/libs/typedarray-0.1/typedarray.min.js"></script>
+  <script src="final_project_presentation_files/libs/jquery-3.5.1/jquery.min.js"></script>
+  <link href="final_project_presentation_files/libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+  <script src="final_project_presentation_files/libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+  <link href="final_project_presentation_files/libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+  <script src="final_project_presentation_files/libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Holidays in New York</h1>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Diana Aldoshyna, Daryna Kalchenko, Mariia Kobycheva 
+</div>
+</div>
+</div>
+
+</section>
+<section id="data" class="slide level2">
+<h2>Data</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<p>We took data about New York taxis from <a href="https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page">Open NYC Taxi dataset</a> (<em>so unexpected!</em>) and wanted to analyze <strong>changes in rides and tips on holidays</strong>.</p>
+</div><div class="column" style="width:40%;">
+<p><img data-src="pics\meme1.jpg"></p>
+</div></div>
+<p>We took some of the most common holidays in the USA from <a href="https://rapidapi.com/almann/api/holidays18">this API</a>. We altered this list a bit, deleting less popular holidays, such as Administrative Professionals Day, Columbus Day, Tax Day, etc.</p>
+</section>
+<section id="graph-1-number-of-rides-on-different-holidays" class="slide level2">
+<h2>Graph #1: Number of rides on different holidays</h2>
+<p>Here we counted the number of rides completed on different holidays. We were curious whether they differ from the average number of rides per day.</p>
+</section>
+<section class="slide level2">
+
+<div style="font-size: 70%;">
+<p>Interestingly, the holiday with the most rides is <strong>Halloween</strong>. Together with the <strong>Valentine’s Day</strong> and <strong>Mother’s Day</strong>, those three are the only holidays with the number of rides above or equal to average.</p>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-ecf1ed87498b1472585c" style="width:960px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-ecf1ed87498b1472585c">{"x":{"data":[{"x":[14,8,9,10,12,15,1,2,16,13,5,7,4,11,3,6],"y":[80805,103078,61817,129428,77244,54764,81013,121771,88697,86461,112607,104995,98484,99824,103415,72579],"text":["Holiday: Christmas Eve<br>Date: 2024-12-24<br>Number of rides: 80805","Holiday: Juneteenth<br>Date: 2024-06-19<br>Number of rides: 103078","Holiday: Independence Day<br>Date: 2024-07-04<br>Number of rides: 61817","Holiday: Halloween<br>Date: 2024-10-31<br>Number of rides: 129428","Holiday: Thanksgiving Day<br>Date: 2024-11-28<br>Number of rides: 77244","Holiday: Christmas Day<br>Date: 2024-12-25<br>Number of rides: 54764","Holiday: New Year's Day<br>Date: 2024-01-01<br>Number of rides: 81013","Holiday: Valentine's Day<br>Date: 2024-02-14<br>Number of rides: 121771","Holiday: New Year's Eve<br>Date: 2024-12-31<br>Number of rides: 88697","Holiday: Day after Thanksgiving Day<br>Date: 2024-11-29<br>Number of rides: 86461","Holiday: Mother's Day<br>Date: 2024-05-12<br>Number of rides: 112607","Holiday: Father's Day<br>Date: 2024-06-16<br>Number of rides: 104995","Holiday: Easter Sunday<br>Date: 2024-03-31<br>Number of rides: 98484","Holiday: Veterans Day<br>Date: 2024-11-11<br>Number of rides: 99824","Holiday: St. Patrick's Day<br>Date: 2024-03-17<br>Number of rides: 103415","Holiday: Memorial Day<br>Date: 2024-05-27<br>Number of rides: 72579"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(57,86,140,1)","opacity":1,"size":13.228346456692915,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(57,86,140,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[14,14,null,8,8,null,9,9,null,10,10,null,12,12,null,15,15,null,1,1,null,2,2,null,16,16,null,13,13,null,5,5,null,7,7,null,4,4,null,11,11,null,3,3,null,6,6],"y":[0,80805,null,0,103078,null,0,61817,null,0,129428,null,0,77244,null,0,54764,null,0,81013,null,0,121771,null,0,88697,null,0,86461,null,0,112607,null,0,104995,null,0,98484,null,0,99824,null,0,103415,null,0,72579],"text":"","type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"rgba(57,86,140,0.5)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[0.40000000000000002,16.600000000000001],"y":[112485.42076502732,112485.42076502732],"text":"","type":"scatter","mode":"lines","line":{"width":2.6456692913385824,"color":"rgba(139,0,0,0.5)","dash":"dot"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[14],"y":[114685.42076502732],"text":"Mean number of rides per day: 112485","hovertext":"","textfont":{"size":13.228346456692915,"color":"rgba(139,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":40.840182648401829,"r":7.3059360730593621,"b":158.03169557940333,"l":60.639269406392714},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Total number of taxi rides per holiday","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,16.600000000000001],"tickmode":"array","ticktext":["New Year's Day","Valentine's Day","St. Patrick's Day","Easter Sunday","Mother's Day","Memorial Day","Father's Day","Juneteenth","Independence Day","Halloween","Veterans Day","Thanksgiving Day","Day after Thanksgiving Day","Christmas Eve","Christmas Day","New Year's Eve"],"tickvals":[1,2,3.0000000000000004,4,5,6,7,8,9,10,11,12,13,14,15,16],"categoryorder":"array","categoryarray":["New Year's Day","Valentine's Day","St. Patrick's Day","Easter Sunday","Mother's Day","Memorial Day","Father's Day","Juneteenth","Independence Day","Halloween","Veterans Day","Thanksgiving Day","Day after Thanksgiving Day","Christmas Eve","Christmas Day","New Year's Eve"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-40,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-6471.4000000000005,135899.39999999999],"tickmode":"array","ticktext":["0","20000","40000","60000","80000","100000","120000"],"tickvals":[0,20000,40000,59999.999999999993,80000,100000,120000],"categoryorder":"array","categoryarray":["0","20000","40000","60000","80000","100000","120000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Number of taxi rides","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"52125ae1bd84":{"x":{},"y":{},"text":{},"type":"scatter"},"52121a6153b9":{"x":{},"y":{},"xend":{},"yend":{}},"52126bbfa436":{"yintercept":{}},"521272b60c7d":{"x":{},"y":{},"label":{}}},"cur_data":"52125ae1bd84","visdat":{"52125ae1bd84":["function (y) ","x"],"52121a6153b9":["function (y) ","x"],"52126bbfa436":["function (y) ","x"],"521272b60c7d":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="graph-2-average-tips-on-most-popular-holidays" class="slide level2">
+<h2>Graph #2: Average tips on most popular holidays</h2>
+<p>On this visualization we explored the way the amount of tips differs on various holidays and for different numbers of people.</p>
+</section>
+<section class="slide level2">
+
+<div style="font-size: 70%;">
+<p>Most rides are ordered by single people. The jump between one and two people is quite dramatic, while the next groups of people do not vary much.</p>
+<p>The “most generous”: <strong>4-people groups</strong> on the <strong>New Year’s Day</strong>, the “least generous”: <strong>5-people groups</strong> on <strong>Christmas Eve</strong>.</p>
+</div>
+<div class="cell">
+<div class="cell-output-display column-body-outset">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-ffe6aceb1776892990c1" style="width:960px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-ffe6aceb1776892990c1">{"x":{"data":[{"x":[1,2,3,4,5,6],"y":[3.7078074550130395,4.3878542130552054,4.6443081550802079,4.8883882457702565,3.6912621359223303,3.9237398373983718],"text":"","type":"scatter","mode":"lines","line":{"width":5.6692913385826778,"color":"rgba(68,1,84,0.5)","dash":"solid"},"hoveron":"points","name":"Christmas Eve","legendgroup":"Christmas Eve","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6],"y":[4.2019558000568002,5.0738628278316069,4.5188876732312222,4.9755582822085787,4.2692534992223949,4.1479325842696619],"text":"","type":"scatter","mode":"lines","line":{"width":5.6692913385826778,"color":"rgba(59,82,139,0.5)","dash":"solid"},"hoveron":"points","name":"Halloween","legendgroup":"Halloween","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6],"y":[3.9438746023014097,4.4699220055710942,4.8856779077770094,5.3681892001623961,4.3109950248756226,4.2085204081632668],"text":"","type":"scatter","mode":"lines","line":{"width":5.6692913385826778,"color":"rgba(33,144,140,0.5)","dash":"solid"},"hoveron":"points","name":"New Year's Eve","legendgroup":"New Year's Eve","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6],"y":[3.8318498783738426,4.5119060616399773,4.2414254247954579,4.3108826247689436,4.2596119402985106,3.9273181818181802],"text":"","type":"scatter","mode":"lines","line":{"width":5.6692913385826778,"color":"rgba(93,200,99,0.5)","dash":"solid"},"hoveron":"points","name":"Thanksgiving Day","legendgroup":"Thanksgiving Day","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6],"y":[3.9604541091141203,4.3291014987387371,4.5248373773877058,4.7064566929133891,3.9432474226804128,4.1177411477411487],"text":"","type":"scatter","mode":"lines","line":{"width":5.6692913385826778,"color":"rgba(253,231,37,0.5)","dash":"solid"},"hoveron":"points","name":"Valentine's Day","legendgroup":"Valentine's Day","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4,3,6,5,2,1],"y":[4.8883882457702565,4.6443081550802079,3.9237398373983718,3.6912621359223303,4.3878542130552054,3.7078074550130395],"text":["Holiday: Christmas Eve<br>Passengers: 4<br>Avg tip: $4.89<br>Total rides: 2246","Holiday: Christmas Eve<br>Passengers: 3<br>Avg tip: $4.64<br>Total rides: 2992","Holiday: Christmas Eve<br>Passengers: 6<br>Avg tip: $3.92<br>Total rides: 246","Holiday: Christmas Eve<br>Passengers: 5<br>Avg tip: $3.69<br>Total rides: 412","Holiday: Christmas Eve<br>Passengers: 2<br>Avg tip: $4.39<br>Total rides: 8533","Holiday: Christmas Eve<br>Passengers: 1<br>Avg tip: $3.71<br>Total rides: 38900"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(68,1,84,1)","opacity":1,"size":[12.564358567268544,13.404560503441243,8.3407521871593051,9.1837819657750313,17.65294080776842,29.307660182131837],"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(68,1,84,1)"}},"hoveron":"points","name":"Christmas Eve","legendgroup":"Christmas Eve","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4,6,3,5,2,1],"y":[4.9755582822085787,4.1479325842696619,4.5188876732312222,4.2692534992223949,5.0738628278316069,4.2019558000568002],"text":["Holiday: Halloween<br>Passengers: 4<br>Avg tip: $4.98<br>Total rides: 1630","Holiday: Halloween<br>Passengers: 6<br>Avg tip: $4.15<br>Total rides: 445","Holiday: Halloween<br>Passengers: 3<br>Avg tip: $4.52<br>Total rides: 2742","Holiday: Halloween<br>Passengers: 5<br>Avg tip: $4.27<br>Total rides: 643","Holiday: Halloween<br>Passengers: 2<br>Avg tip: $5.07<br>Total rides: 12087","Holiday: Halloween<br>Passengers: 1<br>Avg tip: $4.2<br>Total rides: 73801"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(59,82,139,1)","opacity":1,"size":[11.745333038477449,9.303483543883079,13.137108691816238,9.8963162826730535,19.613928995155167,37.551173383637156],"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(59,82,139,1)"}},"hoveron":"points","name":"Halloween","legendgroup":"Halloween","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4,5,3,6,1,2],"y":[5.3681892001623961,4.3109950248756226,4.8856779077770094,4.2085204081632668,3.9438746023014097,4.4699220055710942],"text":["Holiday: New Year's Eve<br>Passengers: 4<br>Avg tip: $5.37<br>Total rides: 2463","Holiday: New Year's Eve<br>Passengers: 5<br>Avg tip: $4.31<br>Total rides: 402","Holiday: New Year's Eve<br>Passengers: 3<br>Avg tip: $4.89<br>Total rides: 2906","Holiday: New Year's Eve<br>Passengers: 6<br>Avg tip: $4.21<br>Total rides: 196","Holiday: New Year's Eve<br>Passengers: 1<br>Avg tip: $3.94<br>Total rides: 41803","Holiday: New Year's Eve<br>Passengers: 2<br>Avg tip: $4.47<br>Total rides: 10770"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(33,144,140,1)","opacity":1,"size":[12.822611041042377,9.1457268762161164,13.313959694259763,7.559055118110237,30.108542985893973,18.926769008117514],"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(33,144,140,1)"}},"hoveron":"points","name":"New Year's Eve","legendgroup":"New Year's Eve","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,3,6,2,5,4],"y":[3.8318498783738426,4.2414254247954579,3.9273181818181802,4.5119060616399773,4.2596119402985106,4.3108826247689436],"text":["Holiday: Thanksgiving Day<br>Passengers: 1<br>Avg tip: $3.83<br>Total rides: 34532","Holiday: Thanksgiving Day<br>Passengers: 3<br>Avg tip: $4.24<br>Total rides: 3178","Holiday: Thanksgiving Day<br>Passengers: 6<br>Avg tip: $3.93<br>Total rides: 220","Holiday: Thanksgiving Day<br>Passengers: 2<br>Avg tip: $4.51<br>Total rides: 8793","Holiday: Thanksgiving Day<br>Passengers: 5<br>Avg tip: $4.26<br>Total rides: 335","Holiday: Thanksgiving Day<br>Passengers: 4<br>Avg tip: $4.31<br>Total rides: 2164"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(93,200,99,1)","opacity":1,"size":[28.04369490856984,13.595862250593484,8.1006307339985018,17.809127796693438,8.8624045937201092,12.463230901402452],"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(93,200,99,1)"}},"hoveron":"points","name":"Thanksgiving Day","legendgroup":"Thanksgiving Day","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4,1,2,5,3,6],"y":[4.7064566929133891,3.9604541091141203,4.3291014987387371,3.9432474226804128,4.5248373773877058,4.1177411477411487],"text":["Holiday: Valentine's Day<br>Passengers: 4<br>Avg tip: $4.71<br>Total rides: 889","Holiday: Valentine's Day<br>Passengers: 1<br>Avg tip: $3.96<br>Total rides: 75004","Holiday: Valentine's Day<br>Passengers: 2<br>Avg tip: $4.33<br>Total rides: 13478","Holiday: Valentine's Day<br>Passengers: 5<br>Avg tip: $3.94<br>Total rides: 1164","Holiday: Valentine's Day<br>Passengers: 3<br>Avg tip: $4.52<br>Total rides: 1937","Holiday: Valentine's Day<br>Passengers: 6<br>Avg tip: $4.12<br>Total rides: 819"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(253,231,37,1)","opacity":1,"size":[10.469236773188191,37.795275590551185,20.299518365313642,10.998522221926137,12.171730233073337,10.31834612028605],"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(253,231,37,1)"}},"hoveron":"points","name":"Valentine's Day","legendgroup":"Valentine's Day","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":40.840182648401829,"r":7.3059360730593621,"b":37.260273972602747,"l":43.105022831050235},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Average amount of tips per number of passangers","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342465},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.75,6.25],"tickmode":"array","ticktext":["1","2","3","4","5","6"],"tickvals":[1,2,3,4,5,6],"categoryorder":"array","categoryarray":["1","2","3","4","5","6"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"Number of passangers","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[3.6074157827103273,5.4520355533743992],"tickmode":"array","ticktext":["4.0","4.5","5.0"],"tickvals":[4,4.5,5],"categoryorder":"array","categoryarray":["4.0","4.5","5.0"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Average amount of the tip, $","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"Holiday name<br />","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"521234e82afd":{"x":{},"y":{},"colour":{},"type":"scatter"},"5212765e632d":{"x":{},"y":{},"colour":{},"size":{},"text":{}}},"cur_data":"521234e82afd","visdat":{"521234e82afd":["function (y) ","x"],"5212765e632d":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="graph-3-entering-and-exiting-manhattan" class="slide level2 smaller">
+<h2>Graph #3: Entering and exiting Manhattan</h2>
+<p>Here we used such thing as <em>congestion surcharge</em> to define the number of rides in, out and around the Manhattan on the New Year’s Eve.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>A congestion surcharge is added to NYC taxi and for-hire vehicle trips in the Manhattan Congestion Zone (south of 96th Street). For taxis, the surcharge is $2.50 per trip, and for other for-hire vehicles (like Uber/Lyft), it is $2.75.</p>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<p><img data-src="pics\map.png"></p>
+</div></div>
+</section>
+<section class="slide level2">
+
+<div style="font-size: 70%;">
+<p>We can see a surge on the <em>“in”</em> graph at 5-6 p.&nbsp;m., meaning that people are entering Manhattan to party. The <em>“out”</em> graph is rather stable throughout the evening, whereas the <em>“inside”</em> one peaks at 9-10 p.&nbsp;m., when people go out.</p>
+</div>
+
+<img data-src="final_project_presentation_files/figure-revealjs/cong-fee-1.png" width="960" class="r-stretch"></section>
+<section id="graph-4-the-map---most-rides-by-nyc-zones-on-the-new-years-eve" class="slide level2">
+<h2>Graph #4: THE map! - Most rides by NYC zones on the New Year’s Eve</h2>
+<p>Here we were analyzing the number of rides per each hour on the New Year’s Eve 2024.</p>
+<p>The data is grouped by <em>hour and region</em>; the region changes color according to the number of rides and when there is no data, it stays grey.</p>
+</section>
+<section class="slide level2">
+
+<div style="font-size: 70%;">
+<p>We can see a lot of rides on the Manhattan and its surrounding areas throughout the day. There were also many rides around the airport, though the number of drop-offs became super-low at the evening since no one flies on the New Year.</p>
+</div>
+
+<img data-src="final_project_presentation_files/figure-revealjs/nyc%20taxis%20map-1.gif" class="r-stretch"></section>
+<section id="graph-5-manhattan-on-new-years-eve" class="slide level2 smaller">
+<h2>Graph #5: Manhattan on New Year’s Eve</h2>
+<p>It was oblivious, that most rides were done in the Manhattan, especially after 1 a. m., so we included the close-up of the Manhattan region.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>We were also curious whether people often go to see the Christmas Tree near the Rockefeller Center, so we put a Christmas tree emoji where it is located.</p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="pics/tree.jpg"></p>
+</div></div>
+</section>
+<section class="slide level2">
+
+
+<img data-src="final_project_presentation_files/figure-revealjs/man%20taxis%20map-1.gif" class="r-stretch"></section>
+<section id="that-is-all-ask-your-questions" class="title-slide slide level1 center">
+<h1>That is all! Ask your questions :)</h1>
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>Final Project: Smart City Data Hackathon</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="final_project_presentation_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="final_project_presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="final_project_presentation_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="final_project_presentation_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="final_project_presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="final_project_presentation_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="final_project_presentation_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="final_project_presentation_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="final_project_presentation_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="final_project_presentation_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
